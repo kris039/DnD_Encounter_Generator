@@ -17,6 +17,7 @@ class Generator(Toplevel):
         self.enemybook = ''
         self.classbook = ''
         self.party_save_path = StringVar()
+        self.party_save_path.set('')
 
         self.monster_choice = Frame(self.grid_main)
         self.monster_choice.pack(fill='x', padx=5, pady=5)
@@ -28,7 +29,6 @@ class Generator(Toplevel):
         self.monster_class.pack(fill='x', padx=5, pady=5)
         self.monster_level = ttk.Spinbox(self.monster_left, from_=1, to=100)
         self.monster_level.pack(fill='x', padx=5, pady=5)
-        self.load_data()
         self.monster_buttons = Frame(self.monster_choice)
         self.monster_buttons.pack(side='left', padx=5, pady=5)
         self.monster_on = Button(self.monster_buttons, text='>>>', command=self.call_add)
@@ -46,6 +46,8 @@ class Generator(Toplevel):
         self.fight = Button(self.grid_main, text='Walcz', command=self.call_fight)
         self.fight.pack(fill='x', padx=5, pady=5)
 
+        self.load_data()
+
     def call_load(self):
         path = filedialog.askopenfilename()
         self.party_save_path.set(path)
@@ -55,9 +57,9 @@ class Generator(Toplevel):
 
     def load_data(self):
         self.enemybook = read_csv('tables/enemies.csv', sep=';')
-        self.monster_type['values'] = list(set(self.enemybook['Przeciwnik']))
+        self.monster_type['values'] = list(self.enemybook['Przeciwnik'])
         self.classbook = read_csv('tables/classes.csv', sep=';')
-        self.monster_class['values'] = list(set(self.classbook['Klasa']))
+        self.monster_class['values'] = list(self.classbook['Klasa'])
 
     def call_add(self):
         if self.monster_type.get() != '' and self.monster_class.get() != '' and self.monster_level.get() != '':

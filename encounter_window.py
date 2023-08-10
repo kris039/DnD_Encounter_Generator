@@ -13,7 +13,6 @@ class Encounter(Toplevel):
         self.players = []
         self.enemies = []
 
-        self.initialized_fight(party_save_path, enemies)
 
         self.grid_main = Frame(self)
         self.grid_main.pack(expand=True)
@@ -31,12 +30,12 @@ class Encounter(Toplevel):
         self.partymenu.add_command(label="Zapisz party", command=self.safe_party)
         self.partymenu.add_separator()
         self.partymenu.add_command(label="Dodaj gracza", command=self.call_add_player)
-        self.partymenu.add_command(label="Usuń gracza", command=self.call_remove_player)
+        self.partymenu.add_command(label="Usuń ostatniego gracza", command=self.call_remove_player)
         self.menubar.add_cascade(label="Gracze", menu=self.partymenu)
 
         self.enemymenu = Menu(self.menubar, tearoff=0)
         self.enemymenu.add_command(label="Dodaj wroga", command=self.call_add_enemy)
-        self.enemymenu.add_command(label="Usuń wroga", command=self.call_remove_enemy)
+        self.enemymenu.add_command(label="Usuń ostatniego wroga", command=self.call_remove_enemy)
         self.menubar.add_cascade(label="Wrogowie", menu=self.enemymenu)
         self.config(menu=self.menubar)
 
@@ -50,59 +49,60 @@ class Encounter(Toplevel):
         self.battle_log_text = 'BattleLog started'
         self.battle_log_display = Text(master=self.grid_middle, background='white', height=15)
         self.battle_log_display.pack(side='left', fill='both', expand=True, padx=2, pady=2)
-        self.dices = Frame(master=self.grid_middle, background='yellow')
-        self.dices.pack(side='right', fill='both', padx=2, pady=2)
-        self.attack_from = ttk.Combobox(master=self.dices)
-        self.attack_from.pack(fill='both', padx=2, pady=2)
-        self.attack_to = ttk.Combobox(master=self.dices)
-        self.attack_to.pack(fill='both', padx=2, pady=2)
-        self.attack = Button(master=self.dices, command=self.call_random, text='Losowy cel', width=25)
-        self.attack.pack(fill='both', padx=2, pady=2)
-        self.attack = Button(master=self.dices, command=self.call_attack, text='Atak', width=25)
-        self.attack.pack(fill='both', padx=2, pady=2)
-        self.refresh = Button(master=self.dices, command=self.call_refresh, text='Odśwież', width=25)
-        self.refresh.pack(fill='both', padx=2, pady=2)
+        self.target_panel = Frame(master=self.grid_middle)
+        self.target_panel.pack(side='right', fill='both', padx=2, pady=2)
+        self.attack_from = ttk.Combobox(master=self.target_panel)
+        self.attack_from.grid(row=0, column=0, columnspan=2, padx=2, pady=2)
+        self.attack_to = ttk.Combobox(master=self.target_panel)
+        self.attack_to.grid(row=1, column=0, columnspan=2, padx=2, pady=2)
+        self.random_att = Button(master=self.target_panel, command=self.call_random, text='Losowy cel')
+        self.random_att.grid(row=2, column=0, columnspan=2, sticky='we', padx=2, pady=2)
+        self.attack1 = Button(master=self.target_panel, command=self.call_attack, text='Atak 1')
+        self.attack1.grid(row=3, column=0, columnspan=1, sticky='we', padx=2, pady=2)
+        self.attack2 = Button(master=self.target_panel, command=self.call_attack, text='Atak 2')
+        self.attack2.grid(row=3, column=1, columnspan=1, sticky='we', padx=2, pady=2)
+        self.refresh = Button(master=self.target_panel, command=self.call_refresh, text='Odśwież')
+        self.refresh.grid(row=4, column=0, columnspan=2, sticky='we', padx=2, pady=2)
 
+        self.initialized_fight(party_save_path, enemies)
         self.call_refresh()
         self.mainloop()
 
     def initialized_fight(self, path, enemies):
         if path != '':
-            print('party załadowane')
+            print('Party załadowane')
         if len(enemies) > 0:
             self.generate_enemies(enemies)
-            print('wrogowie załadowani')
+            print('Wrogowie załadowani')
 
     def generate_enemies(self, enemies_inp):
         enemies_df = read_csv('tables/enemies.csv', sep=';')
-        print(enemies_df)
-        print(enemies_inp)
         for e in enemies_inp:
             r = e.split(', ')
             enemy_r = enemies_df.loc[enemies_df['Przeciwnik'] == r[0]]
-            hp = int(enemy_r['KW_mod'][0]*random.randint(1, enemy_r['KW_k'][0]))
+            name = (r[0] + ' ' + r[1])
+            hp = int(enemy_r['KW_mod'].iloc[0]*random.randint(1, enemy_r['KW_k'].iloc[0]))
             if hp == 0:
                 hp = 1
-            kp = enemy_r['KP'][0]
-            att_mod = 0
-            weapon = enemy_r['Broń'][0]
-            weapon_mod = 0
-            damage_mod = enemy_r['Obrażenia_mod'][0]
-            wytr = enemy_r['Wytrw'][0]
-            ref = enemy_r['Ref'][0]
-            wola = enemy_r['Wola'][0]
-
-            enemy = Enemy(self.grid_bottom, len(self.enemies), (r[0] + ' ' + r[1]), hp, kp, att_mod, weapon, weapon_mod, damage_mod, wytr,
-                          ref, wola)
+            kp = enemy_r['KP'].iloc[0]
+            att1 = enemy_r['Atak_1'].iloc[0]
+            att1_mod = enemy_r['Atak_1_mod'].iloc[0]
+            att1_dmg_mod = enemy_r['Atak_1_dmg_mod'].iloc[0]
+            att2 = enemy_r['Atak_2'].iloc[0]
+            att2_mod = enemy_r['Atak_2_mod'].iloc[0]
+            att2_dmg_mod = enemy_r['Atak_2_dmg_mod'].iloc[0]
+            wytr = enemy_r['Wytrw'].iloc[0]
+            ref = enemy_r['Ref'].iloc[0]
+            wola = enemy_r['Wola'].iloc[0]
+            enemy = Enemy(self.grid_bottom, len(self.enemies), name, hp, kp, att1, att1_mod, att1_dmg_mod, att2,
+                          att2_mod, att2_dmg_mod, wytr, ref, wola)
             self.enemies.append(enemy)
             enemy.pack(side='left', padx=2, pady=2)
-
-        print('Wygenerowano: ')
 
     def call_random(self):
         target = random.randint(1, len(self.fighters))
         print(target)
-        self.battle_log_display.yview_moveto(1)
+        # self.battle_log_display.yview_moveto(1)
 
     def call_attack(self):
         throw = random.randint(1, 20)
@@ -142,13 +142,13 @@ class Encounter(Toplevel):
         print(DataFrame(player_dict))
 
     def call_add_player(self):
-        player = Player(self.grid_top, len(self.players), *range(1, 10))
+        player = Player(self.grid_top, len(self.enemies), "Gracz", *range(11))
         self.players.append(player)
         player.pack(side='left', padx=2, pady=2)
         self.call_refresh()
 
     def call_add_enemy(self):
-        enemy = Enemy(self.grid_bottom, len(self.enemies), "Przeciwnik", *range(1, 10))
+        enemy = Enemy(self.grid_bottom, len(self.enemies), "Przeciwnik", *range(11))
         self.enemies.append(enemy)
         enemy.pack(side='left', padx=2, pady=2)
         self.call_refresh()
@@ -156,12 +156,12 @@ class Encounter(Toplevel):
     def call_remove_player(self):
         if len(self.players) > 1:
             self.players[-1].pack_forget()
-            self.players.pop(0)
+            self.players.pop(-1)
 
     def call_remove_enemy(self):
         if len(self.enemies) > 1:
             self.enemies[-1].pack_forget()
-            self.enemies.pop(0)
+            self.enemies.pop(-1)
 
 
 if __name__ == "__main__":

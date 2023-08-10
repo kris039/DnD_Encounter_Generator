@@ -1,4 +1,4 @@
-Przeciwnik;KW_mod;KW_k;KP;Broń;Obrażenia_k;Obrażenia_mod;Wytrw;Ref;Wola
-Kobold;0.5;8;15;Półwłócznia;1k6;-2;0;1;2
-Goblin(t);1;4;5;Miecz(t);1k6;-2;0;1;2
-Ork(t);2;4;10;Miecz(t);1k6;-2;0;1;2
+Przeciwnik;KW_mod;KW_k;KP;Atak_1;Atak_1_mod;Atak_1_dmg_mod;Atak_2;Atak_2_mod;Atak_2_dmg_mod;Wytrw;Ref;Wola
+Kobold;0.5;8;15;Półwłócznia;-1;-2;Kusza, lekka;2;0;0;1;2
+Goblin(t);1;10;5;Dziryt;-1;-2;Kusza, lekka;2;0;0;1;2
+Ork(t);2;4;10;Drąg;-1;-2;Kusza, lekka;2;0;0;1;2

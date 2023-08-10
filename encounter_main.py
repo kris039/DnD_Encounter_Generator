@@ -1,4 +1,3 @@
-import random
 from tkinter import Tk, Button
 from encounter_generator import Generator
 
