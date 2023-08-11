@@ -36,7 +36,7 @@ class Generator(Toplevel):
         self.monster_off = Button(self.monster_buttons, text='<<<', command=self.call_remove)
         self.monster_off.pack(padx=5, pady=5)
         self.monster_right = Listbox(self.monster_choice)
-        self.monster_right.pack(expand=True, side='left', padx=5, pady=5)
+        self.monster_right.pack(fill='x', expand=True, side='left', padx=5, pady=5)
         self.path = Label(self.grid_main, textvariable=self.party_save_path)
         self.path.pack(fill='x', padx=5, pady=5)
         self.load = Button(self.grid_main, text='Wczytaj istniejącą drużynę', command=self.call_load)
@@ -50,7 +50,8 @@ class Generator(Toplevel):
 
     def call_load(self):
         path = filedialog.askopenfilename()
-        self.party_save_path.set(path)
+        if path != '':
+            self.party_save_path.set(path)
 
     def call_new(self):
         self.party_save_path.set('')
@@ -70,7 +71,7 @@ class Generator(Toplevel):
         self.monster_right.delete(self.monster_right.curselection()[0])
 
     def call_fight(self):
-        self.encounter = Encounter(self.master, self.party_save_path, self.monster_right.get(0, END))
+        self.encounter = Encounter(self.master, self.party_save_path.get(), self.monster_right.get(0, END))
 
 
 if __name__ == "__main__":

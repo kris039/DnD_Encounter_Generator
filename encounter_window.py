@@ -1,18 +1,14 @@
 import random
-from tkinter import ttk, Tk, Frame, Label, Button, StringVar, Scrollbar, Text, END, Menu, Toplevel, filedialog
+from tkinter import ttk, Tk, Frame, Label, Button, StringVar, Scrollbar, Text, END, Menu, Toplevel, filedialog, messagebox
 from pandas import read_csv, DataFrame
 from encounter_player import Player
 from encounter_enemy import Enemy
 
 
 class Encounter(Toplevel):
-    def __init__(self, master, party_save_path, enemies):
+    def __init__(self, master, party_save_path='', enemies=()):
         super().__init__(master)
-        # self.party_safe_path = party_save_path
-        self.fighters = []
-        self.players = []
-        self.enemies = []
-
+        self.characters = []
 
         self.grid_main = Frame(self)
         self.grid_main.pack(expand=True)
@@ -26,16 +22,21 @@ class Encounter(Toplevel):
         self.menubar = Menu(self)
 
         self.partymenu = Menu(self.menubar, tearoff=0)
-        self.partymenu.add_command(label="Otworz party", command=self.call_attack)
-        self.partymenu.add_command(label="Zapisz party", command=self.safe_party)
+        self.partymenu.add_command(label="Zapisz spotkanie", command=self.call_save)
+        self.partymenu.add_separator()
+        self.partymenu.add_command(label="Otworz party", command=self.call_open)
+        self.partymenu.add_command(label="Zapisz party", command=self.call_save_party)
         self.partymenu.add_separator()
         self.partymenu.add_command(label="Dodaj gracza", command=self.call_add_player)
-        self.partymenu.add_command(label="Usuń ostatniego gracza", command=self.call_remove_player)
+        # self.partymenu.add_command(label="Usuń ostatniego gracza", command=self.call_remove_player)
         self.menubar.add_cascade(label="Gracze", menu=self.partymenu)
 
         self.enemymenu = Menu(self.menubar, tearoff=0)
+        self.enemymenu.add_command(label="Otworz przeciwników", command=self.call_open)
+        self.enemymenu.add_command(label="Zapisz przeciwników", command=self.call_save_enemies)
+        self.enemymenu.add_separator()
         self.enemymenu.add_command(label="Dodaj wroga", command=self.call_add_enemy)
-        self.enemymenu.add_command(label="Usuń ostatniego wroga", command=self.call_remove_enemy)
+        # self.enemymenu.add_command(label="Usuń ostatniego wroga", command=self.call_remove_enemy)
         self.menubar.add_cascade(label="Wrogowie", menu=self.enemymenu)
         self.config(menu=self.menubar)
 
@@ -64,16 +65,12 @@ class Encounter(Toplevel):
         self.refresh = Button(master=self.target_panel, command=self.call_refresh, text='Odśwież')
         self.refresh.grid(row=4, column=0, columnspan=2, sticky='we', padx=2, pady=2)
 
-        self.initialized_fight(party_save_path, enemies)
+        if party_save_path != '':
+            self.call_open(party_save_path)
+        if enemies != ():
+            self.generate_enemies(enemies)
         self.call_refresh()
         self.mainloop()
-
-    def initialized_fight(self, path, enemies):
-        if path != '':
-            print('Party załadowane')
-        if len(enemies) > 0:
-            self.generate_enemies(enemies)
-            print('Wrogowie załadowani')
 
     def generate_enemies(self, enemies_inp):
         enemies_df = read_csv('tables/enemies.csv', sep=';')
@@ -94,74 +91,135 @@ class Encounter(Toplevel):
             wytr = enemy_r['Wytrw'].iloc[0]
             ref = enemy_r['Ref'].iloc[0]
             wola = enemy_r['Wola'].iloc[0]
-            enemy = Enemy(self.grid_bottom, len(self.enemies), name, hp, kp, att1, att1_mod, att1_dmg_mod, att2,
+            enemy = Enemy(self.grid_bottom, len(self.characters), name, hp, kp, att1, att1_mod, att1_dmg_mod, att2,
                           att2_mod, att2_dmg_mod, wytr, ref, wola)
-            self.enemies.append(enemy)
+            self.characters.append(enemy)
             enemy.pack(side='left', padx=2, pady=2)
 
     def call_random(self):
-        target = random.randint(1, len(self.fighters))
-        print(target)
-        # self.battle_log_display.yview_moveto(1)
+        if self.check():
+            target = random.randint(1, len(self.characters))
+            print(target)
 
     def call_attack(self):
-        throw = random.randint(1, 20)
-        self.battle_log_text += '\n' + 'Rzut k20: ' + str(throw)
-        self.battle_log_display.insert('insert', ('\n' + 'Rzut k20: ' + str(throw)))
-        self.battle_log_display.yview_moveto(1)
+        if self.check():
+            attacker = self.attack_from.get()
+            attacked = self.attack_to.get()
+
+            if attacker != '' and attacked != '':
+                self.battle_log_text += '\n' + attacker + ' zaatakował ' + attacked
+                hit_throw = random.randint(1, 20)
+                if hit_throw >= 20:
+                    self.battle_log_text += ('\n' + attacker + ': Rzut k20 na trafienie: ' + str(hit_throw)
+                                             + ' - TRAFIENIE KRYTYCZNE')
+                    dmg = 0
+                    for i in range(3):
+                        dmg_throw = random.randint(1, 8)
+                        dmg += dmg_throw
+                        self.battle_log_text += ('\n' + attacker + ': Rzut k8(t) na obrażenia: ' + str(dmg_throw))
+                    self.battle_log_text += '\n' + attacker + ' zadał ' + str(dmg) + ' punktów obrażeń'
+                if hit_throw >= 12:
+                    self.battle_log_text += '\n' + attacker + ': Rzut k20 na trafienie: ' + str(hit_throw)
+                    dmg = 0
+                    dmg_throw = random.randint(1, 8)
+                    dmg += dmg_throw
+                    self.battle_log_text += ('\n' + attacker + ': Rzut k8(t) na obrażenia: ' + str(dmg_throw))
+                    self.battle_log_text += '\n' + attacker + ' zadał punktów obrażeń' + str(dmg)
+
+                else:
+                    self.battle_log_text += '\n' + attacker + ': Rzut k20 na trafienie: ' + str(hit_throw)
+                    self.battle_log_text += '\n' + attacker + ' chybił'
+            self.call_refresh()
 
     def call_refresh(self):
         self.battle_log_display.delete(1.0, END)
         self.battle_log_display.insert('insert', self.battle_log_text)
-        self.fill_fighters_list()
-        self.attack_from['values'] = self.fighters
-        self.attack_to['values'] = self.fighters
+        self.battle_log_display.yview_moveto(1)
+        self.fill_character_list()
+        self.attack_from['values'] = self.character_list
+        self.attack_to['values'] = self.character_list
+        self.check()
 
-    def fill_fighters_list(self):
-        self.fighters = []
-        for i in self.players+self.enemies:
+    def check(self):
+        if len(self.character_list) == len(set(self.character_list)):
+            return True
+        else:
+            messagebox.showwarning('Ogarnij imiona',
+                                   'Zanim będziesz kontynuować, zmień imiona by były unikalne')
+            return False
+
+    def fill_character_list(self):
+        self.character_list = []
+        for i in self.characters:
             if i.name.get() != '' and int(i.hp.get()) > 0:
-                self.fighters.append(i.name.get())
+                self.character_list.append(i.name.get())
+        self.character_list.sort()
 
-    def open_party(self):
-        return None
+    def call_open(self, path='', who=''):
+        if path == '':
+            path = filedialog.askopenfilename(defaultextension='.csv')
+        if path != '':
+            loaded = read_csv(path, sep=';')
+            for i, j in loaded.iterrows():
+                if j[0] == 'Gracz':
+                    char = Player(self.grid_top, len(self.characters), *j[1:])
+                    self.characters.append(char)
+                    char.pack(side='left', padx=2, pady=2)
+                if j[0] == 'Przeciwnik':
+                    char = Enemy(self.grid_bottom, len(self.characters), *j[1:])
+                    self.characters.append(char)
+                    char.pack(side='left', padx=2, pady=2)
 
-    def safe_party(self):
+    def call_save_party(self):
+        self.call_save('Gracz')
+
+    def call_save_enemies(self):
+        self.call_save('Przeciwnik')
+
+    def call_save(self, who=''):
+        def save(c, wh):
+            if c.status.get() != wh:
+                character_dict["Status"].append(c.status.get())
+                character_dict["Imię"].append(c.name.get())
+                character_dict["HP"].append(c.hp.get())
+                character_dict["KP"].append(c.kp.get())
+                character_dict["Atak 1"].append(c.att1.get())
+                character_dict["Mod 1"].append(c.att1_mod.get())
+                character_dict["Dmg mod 1"].append(c.att1_dmg_mod.get())
+                character_dict["Atak 2"].append(c.att2.get())
+                character_dict["Mod 2"].append(c.att2_mod.get())
+                character_dict["Dmg mod 2"].append(c.att2_dmg_mod.get())
+                character_dict["Wytr"].append(c.wytr.get())
+                character_dict["Ref"].append(c.ref.get())
+                character_dict["Wola"].append(c.wola.get())
+
         path = filedialog.asksaveasfilename(defaultextension='.csv')
-        player_dict = {"Imię": [], "HP": [], "Klasa pancerza": [], "Modyfikator ataku": [], "Broń": [],
-                       "Premia do obrażeń": []}
-        for p in self.players:
-            print(p.name.get(), p.health.get(), p.armor.get(), p.attack_mod.get(), p.weapon.get(), p.additional.get())
-            player_dict["Imię"].append(p.name.get())
-            player_dict["HP"].append(p.health.get())
-            player_dict["Klasa pancerza"].append(p.armor.get())
-            player_dict["Modyfikator ataku"].append(p.attack_mod.get())
-            player_dict["Broń"].append(p.weapon.get())
-            player_dict["Premia do obrażeń"].append(p.additional.get())
-        print(path)
-        print(DataFrame(player_dict))
+        if path != '':
+            character_dict = {"Status": [], "Imię": [], "HP": [], "KP": [],
+                              "Atak 1": [], "Mod 1": [], "Dmg mod 1": [],
+                              "Atak 2": [], "Mod 2": [], "Dmg mod 2": [],
+                              "Wytr": [], "Ref": [], "Wola": []}
+
+            for p in self.characters:
+                if who == 'Gracz':
+                    save(p, 'Przeciwnik')
+                elif who == 'Przeciwnik':
+                    save(p, 'Gracz')
+                else:
+                    save(p, '')
+            DataFrame(character_dict).to_csv(path, ';', index=False)
 
     def call_add_player(self):
-        player = Player(self.grid_top, len(self.enemies), "Gracz", *range(11))
-        self.players.append(player)
+        player = Player(self.grid_top, len(self.characters), "Gracz " + str(len(self.characters)), *range(1, 12))
+        self.characters.append(player)
         player.pack(side='left', padx=2, pady=2)
         self.call_refresh()
 
     def call_add_enemy(self):
-        enemy = Enemy(self.grid_bottom, len(self.enemies), "Przeciwnik", *range(11))
-        self.enemies.append(enemy)
+        enemy = Enemy(self.grid_bottom, len(self.characters), "Przeciwnik " + str(len(self.characters)), *range(1, 12))
+        self.characters.append(enemy)
         enemy.pack(side='left', padx=2, pady=2)
         self.call_refresh()
-
-    def call_remove_player(self):
-        if len(self.players) > 1:
-            self.players[-1].pack_forget()
-            self.players.pop(-1)
-
-    def call_remove_enemy(self):
-        if len(self.enemies) > 1:
-            self.enemies[-1].pack_forget()
-            self.enemies.pop(-1)
 
 
 if __name__ == "__main__":
