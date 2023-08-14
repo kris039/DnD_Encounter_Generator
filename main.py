@@ -1,4 +1,4 @@
-import encounter_main
+import engen_main
 
 if __name__ == "__main__":
-    mainWindow = encounter_main.EcGen()
+    mainWindow = engen_main.EnGen()
