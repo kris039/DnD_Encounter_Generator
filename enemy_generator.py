@@ -1,13 +1,15 @@
 import random
-
 import pandas
 
 
-def generate_enemy(r, enemy_r):
-    name = (r[0] + ' ' + r[1])
+def generate_enemy(r, enemy_r, class_r):
+    name = (r[0] + ' ' + r[1] + ' lv ' + r[2])
     hp = int(enemy_r['KW_mod'].iloc[0] * random.randint(1, enemy_r['KW_k'].iloc[0]))
     if hp == 0:
         hp = 1
+    if int(r[2]) > 1:
+        for i in range(int(r[2])-1):
+            hp += int(class_r['KW_mod'].iloc[0]*random.randint(1, class_r['KW_d'].iloc[0]))
     kp = enemy_r['KP'].iloc[0]
     att1 = enemy_r['Atak_1'].iloc[0]
     att1_mod = enemy_r['Atak_1_mod'].iloc[0]

@@ -64,9 +64,9 @@ class Encounter(Toplevel):
         self.battle_log_display = Text(master=self.grid_middle, background='white', height=15)
         self.battle_log_display.pack(side='left', fill='both', expand=True, padx=2, pady=2)
         self.right_panel = Frame(master=self.grid_middle)
-        self.right_panel.pack(side='right', fill='both', expand=True, padx=2, pady=2)
+        self.right_panel.pack(side='right', fill='both', padx=2, pady=2)
         self.attack_panel = Frame(master=self.right_panel)
-        self.attack_panel.pack(fill='x', expand=True, padx=2, pady=2)
+        self.attack_panel.pack(padx=2, pady=2)
         self.attack_from = ttk.OptionMenu(self.attack_panel, self.attack_from_name, '', *self.character_list)
         self.attack_from.grid(row=0, column=0, columnspan=2, padx=2, pady=2, sticky='we')
         self.attack_to = ttk.OptionMenu(self.attack_panel, self.attack_to_name, '', *self.character_list)
@@ -95,10 +95,12 @@ class Encounter(Toplevel):
 
     def generate_enemies(self, enemies_inp):
         enemies_df = read_csv('tables/enemies.csv', sep=';')
+        classes_df = read_csv('tables/classes.csv', sep=';')
         for e in enemies_inp:
             r = e.split(', ')
             enemy_r = enemies_df.loc[enemies_df['Przeciwnik'] == r[0]]
-            enemy = Enemy(self.grid_bottom, self.id_count, *generate_enemy(r, enemy_r))
+            class_r = classes_df.loc[classes_df['Klasa'] == r[1]]
+            enemy = Enemy(self.grid_bottom, self.id_count, *generate_enemy(r, enemy_r, class_r))
             self.id_count += 1
             self.characters.append(enemy)
             enemy.pack(side='left', padx=2, pady=2)
