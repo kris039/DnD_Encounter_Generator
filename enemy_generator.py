@@ -1,5 +1,7 @@
 import random
 
+import pandas
+
 
 def generate_enemy(r, enemy_r):
     name = (r[0] + ' ' + r[1])
@@ -18,7 +20,7 @@ def generate_enemy(r, enemy_r):
     wola = enemy_r['Wola'].iloc[0]
     drop = []
     pre_drop = enemy_r['Drop'].iloc[0]
-    if len(pre_drop) != 0:
+    if not pandas.isna(pre_drop):
         for i in pre_drop.split(','):
             if float(i.split('/')[1]) >= random.randint(0, 100) / 100:
                 drop.append(i.split('/')[0])

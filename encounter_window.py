@@ -7,6 +7,7 @@ from enemy import Enemy
 from dice_pack import DicePack
 from enemy_generator import generate_enemy
 from enemy_group_window import EnemyGroupWindow
+from delete_window import DeleteCharacterWindow
 
 
 class Encounter(Toplevel):
@@ -14,6 +15,8 @@ class Encounter(Toplevel):
         super().__init__(master)
         self.characters = []
         self.character_list = []
+        self.id_count = 0
+
         self.attack_from_name = StringVar()
         self.attack_to_name = StringVar()
 
@@ -28,14 +31,16 @@ class Encounter(Toplevel):
 
         self.menubar = Menu(self)
 
+        self.generalmenu = Menu(self.menubar, tearoff=0)
+        self.generalmenu.add_command(label="Zapisz spotkanie", command=self.call_save)
+        self.generalmenu.add_command(label="Usuń postać", command=self.call_delete_window)
+        self.menubar.add_cascade(label="Ogólne", menu=self.generalmenu)
+
         self.partymenu = Menu(self.menubar, tearoff=0)
-        self.partymenu.add_command(label="Zapisz spotkanie", command=self.call_save)
-        self.partymenu.add_separator()
         self.partymenu.add_command(label="Otworz party", command=self.call_open)
         self.partymenu.add_command(label="Zapisz party", command=self.call_save_party)
         self.partymenu.add_separator()
         self.partymenu.add_command(label="Dodaj gracza", command=self.call_add_player)
-        # self.partymenu.add_command(label="Usuń ostatniego gracza", command=self.call_remove_player)
         self.menubar.add_cascade(label="Gracze", menu=self.partymenu)
 
         self.enemymenu = Menu(self.menubar, tearoff=0)
@@ -45,7 +50,6 @@ class Encounter(Toplevel):
         self.enemymenu.add_command(label="Generuj grupę przeciwników", command=self.call_enemy_group)
         self.enemymenu.add_separator()
         self.enemymenu.add_command(label="Dodaj wroga", command=self.call_add_enemy)
-        # self.enemymenu.add_command(label="Usuń ostatniego wroga", command=self.call_remove_enemy)
         self.menubar.add_cascade(label="Wrogowie", menu=self.enemymenu)
         self.config(menu=self.menubar)
 
@@ -94,9 +98,20 @@ class Encounter(Toplevel):
         for e in enemies_inp:
             r = e.split(', ')
             enemy_r = enemies_df.loc[enemies_df['Przeciwnik'] == r[0]]
-            enemy = Enemy(self.grid_bottom, len(self.characters), *generate_enemy(r, enemy_r))
+            enemy = Enemy(self.grid_bottom, self.id_count, *generate_enemy(r, enemy_r))
+            self.id_count += 1
             self.characters.append(enemy)
             enemy.pack(side='left', padx=2, pady=2)
+
+    def remove_character(self, name):
+        for index, char in enumerate(self.characters):
+            if char.name.get() == name:
+                self.characters.pop(index)
+                char.pack_forget()
+        self.call_refresh()
+
+    def call_delete_window(self):
+        win = DeleteCharacterWindow(self, self.characters, self.remove_character)
 
     def call_random(self):
         if self.check() and len(self.characters) > 0:
@@ -167,11 +182,13 @@ class Encounter(Toplevel):
             loaded = read_csv(path, sep=';')
             for i, j in loaded.iterrows():
                 if j[0] == 'Gracz':
-                    char = Player(self.grid_top, len(self.characters), *j[1:])
+                    char = Player(self.grid_top, self.id_count, *j[1:])
+                    self.id_count += 1
                     self.characters.append(char)
                     char.pack(side='left', padx=2, pady=2)
                 if j[0] == 'Przeciwnik':
-                    char = Enemy(self.grid_bottom, len(self.characters), *j[1:])
+                    char = Enemy(self.grid_bottom, self.id_count, *j[1:])
+                    self.id_count += 1
                     self.characters.append(char)
                     char.pack(side='left', padx=2, pady=2)
 
@@ -215,13 +232,15 @@ class Encounter(Toplevel):
             DataFrame(character_dict).to_csv(path, ';', index=False)
 
     def call_add_player(self):
-        player = Player(self.grid_top, len(self.characters), "Gracz " + str(len(self.characters)), *range(1, 12))
+        player = Player(self.grid_top, self.id_count, "Gracz " + str(self.id_count), *range(1, 12))
+        self.id_count += 1
         self.characters.append(player)
         player.pack(side='left', padx=2, pady=2)
         self.call_refresh()
 
     def call_add_enemy(self):
-        enemy = Enemy(self.grid_bottom, len(self.characters), "Przeciwnik " + str(len(self.characters)), *range(1, 12))
+        enemy = Enemy(self.grid_bottom, self.id_count, "Przeciwnik " + str(self.id_count), *range(1, 12))
+        self.id_count += 1
         self.characters.append(enemy)
         enemy.pack(side='left', padx=2, pady=2)
         self.call_refresh()

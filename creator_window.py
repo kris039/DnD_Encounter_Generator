@@ -2,6 +2,7 @@ from tkinter import ttk, Tk, Frame, Label, Button, Toplevel, filedialog, StringV
 from pandas import read_csv, DataFrame
 from encounter_window import Encounter
 
+
 class Generator(Toplevel):
     def __init__(self, master):
         super().__init__(master)
@@ -10,7 +11,6 @@ class Generator(Toplevel):
 
         # self.root.iconbitmap(r'')
         self.minsize(400, 300)
-        # self.resizable(True, True)
         self.resizable(False, False)
         self.title("EnGen")
 
@@ -71,7 +71,7 @@ class Generator(Toplevel):
         self.monster_right.delete(self.monster_right.curselection()[0])
 
     def call_fight(self):
-        self.encounter = Encounter(self.master, self.party_save_path.get(), self.monster_right.get(0, END))
+        self.master.encounter = Encounter(self.master, self.party_save_path.get(), self.monster_right.get(0, END))
 
 
 if __name__ == "__main__":

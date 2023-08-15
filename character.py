@@ -3,7 +3,8 @@ from character_info import Character_info
 
 
 class Character(Frame):
-    def __init__(self, master, char_id, name, hp, kp, att1, att1_mod, att1_dmg_mod, att2, att2_mod, att2_dmg_mod, wytr, ref, wola, drop=()):
+    def __init__(self, master, char_id, name, hp, kp, att1, att1_mod, att1_dmg_mod, att2, att2_mod, att2_dmg_mod,
+                 wytr, ref, wola, drop=()):
         super().__init__(master)
         self.character_id = char_id
         self.ui_spacing = 2
@@ -42,8 +43,12 @@ class Character(Frame):
 
         self.label_name = Entry(self.grid, textvariable=self.name)
         self.label_name.grid(row=0, column=0, columnspan=2, sticky='we', padx=self.ui_spacing, pady=self.ui_spacing)
-        self.label_info = Button(self.grid, text='Info', command=self.call_info)
-        self.label_info.grid(row=0, column=2, sticky='e', padx=self.ui_spacing, pady=self.ui_spacing)
+        self.info_frame = Frame(self.grid)
+        self.info_frame.grid(row=0, column=2, sticky='we', padx=self.ui_spacing, pady=self.ui_spacing)
+        self.button_info = Button(self.info_frame, text='Info', command=self.call_info)
+        self.button_info.pack(side='right', padx=self.ui_spacing, pady=self.ui_spacing)
+        self.label_id = Label(self.info_frame, text=str('ID: ' + str(self.character_id)))
+        self.label_id.pack(side='right', padx=self.ui_spacing, pady=self.ui_spacing)
         self.label_hp_kp = Label(self.grid, text="HP/KP")
         self.label_hp_kp.grid(row=1, column=0, padx=self.ui_spacing, pady=self.ui_spacing)
         self.label_att1 = Label(self.grid, text="Atak 1")

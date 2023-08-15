@@ -71,10 +71,11 @@ class EnemyGroupWindow(Toplevel):
             if check.get() == 1:
                 classes.append(name)
         for i in range(int(self.enemy_amount.get())):
-            print(enemies[random.randint(0, len(enemies)-1)])
-            print(classes[random.randint(0, len(classes)-1)])
-            print(random.randint(1, int(self.max_level.get())))
-        print(self.enemy_inp)
+            self.enemy_inp.append(str(enemies[random.randint(0, len(enemies)-1)] + ', ' +
+                                  classes[random.randint(0, len(classes)-1)] + ', ' +
+                                  str(random.randint(1, int(self.max_level.get())))))
+        self.generator(self.enemy_inp)
+        self.destroy()
 
     def load_data(self):
         self.enemybook = read_csv('tables/enemies.csv', sep=';')

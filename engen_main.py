@@ -31,8 +31,7 @@ class EnGen:
     def call_open(self):
         path = filedialog.askopenfilename()
         if path != '':
-            print(path)
             self.encounter = Encounter(self.root, path)
 
     def call_test(self):
-        self.encounter = Encounter(self.root, 'C:/Users/a764741/Downloads/test3_csv.csv')
+        self.encounter = Encounter(self.root, 'C:/Users/Krzysiek/Downloads/test.csv')
