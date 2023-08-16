@@ -76,8 +76,6 @@ class EnGen:
         self.attack_to.grid(row=1, column=0, columnspan=2, padx=2, pady=2, sticky='we')
         self.random_att = Button(master=self.attack_panel, command=self.call_random, text='Losowy cel', width=25)
         self.random_att.grid(row=2, column=0, columnspan=2, sticky='we', padx=2, pady=2)
-        self.random_att = Checkbutton(master=self.attack_panel, text='Losowy cel', width=25)
-        self.random_att.grid(row=2, column=0, columnspan=2, sticky='we', padx=2, pady=2)
         self.attack1 = Button(master=self.attack_panel, command=self.call_attack1, text='Atak 1')
         self.attack1.grid(row=3, column=0, columnspan=1, sticky='we', padx=2, pady=2)
         self.attack2 = Button(master=self.attack_panel, command=self.call_attack2, text='Atak 2')
