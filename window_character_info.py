@@ -1,8 +1,8 @@
 from tkinter import ttk, Tk, Frame, Label, Entry, StringVar, Button, Toplevel
 
 
-class Character_info(Toplevel):
-    def __init__(self, master, perks=(), skills=(), drop=()):
+class CharacterInfo(Toplevel):
+    def __init__(self, master, perks=(), spells=(), drop=()):
         super().__init__(master)
         self.ui_spacing = 2
 
@@ -10,14 +10,18 @@ class Character_info(Toplevel):
         self.minsize(200, 200)
 
         self.grid = Frame(self)
-        self.grid.pack(fill='both')
+        self.grid.pack(fill='both', padx=10, pady=10)
 
         self.perks = StringVar()
-        self.skills = StringVar()
+        self.spells = StringVar()
         self.drop = StringVar()
 
-        self.perks.set(perks)
-        self.skills.set(skills)
+        perk_str = '\n'
+        for i in perks:
+            perk_str += (str(i['Nazwa']) + ' -> ' + str(i['Info'])
+                         + '\n\tAtt mod/Dmg mod -> ' + str(i['Att_mod']) + '/' + str(i['Dmg_mod']) + '\n')
+        self.perks.set(perk_str)
+        self.spells.set(spells)
         drop_str = '\n'
         for i in drop:
             drop_str += i + '\n'
@@ -29,10 +33,10 @@ class Character_info(Toplevel):
         self.label_perks.pack(fill='both', padx=self.ui_spacing, pady=self.ui_spacing)
         self.sep = ttk.Separator(self.grid, orient='horizontal')
         self.sep.pack(fill='x', padx=self.ui_spacing, pady=self.ui_spacing)
-        self.title_skills = Label(self.grid, text='Umiejętności')
-        self.title_skills.pack(fill='both', padx=self.ui_spacing, pady=self.ui_spacing)
-        self.label_skills = Label(self.grid, textvariable=self.skills)
-        self.label_skills.pack(fill='both', padx=self.ui_spacing, pady=self.ui_spacing)
+        self.title_spells = Label(self.grid, text='Zaklęcia')
+        self.title_spells.pack(fill='both', padx=self.ui_spacing, pady=self.ui_spacing)
+        self.label_spells = Label(self.grid, textvariable=self.spells)
+        self.label_spells.pack(fill='both', padx=self.ui_spacing, pady=self.ui_spacing)
         self.sep = ttk.Separator(self.grid, orient='horizontal')
         self.sep.pack(fill='x', padx=self.ui_spacing, pady=self.ui_spacing)
         self.title_drop = Label(self.grid, text='Przedmioty')

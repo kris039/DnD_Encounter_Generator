@@ -1,11 +1,11 @@
 from tkinter import ttk, Tk, Frame, Label, Entry, Spinbox, StringVar, Button
-from window_character_info import Character_info
+from window_character_info import CharacterInfo
 from pandas import read_csv
 
 
 class Character(Frame):
     def __init__(self, master, char_id, name, hp, kp, att1, att1_mod, att1_dmg_mod, att2, att2_mod, att2_dmg_mod,
-                 wytr, ref, wola, drop=()):
+                 wytr, ref, wola, perks=(), drop=()):
         super().__init__(master)
         self.character_id = char_id
         self.ui_spacing = 2
@@ -41,6 +41,7 @@ class Character(Frame):
         self.wytr.set(wytr)
         self.ref.set(ref)
         self.wola.set(wola)
+        self.perks = perks
         self.drop = drop
 
         self.label_name = Entry(self.grid, textvariable=self.name)
@@ -88,7 +89,7 @@ class Character(Frame):
         self.field_wola.grid(row=7, column=2, padx=self.ui_spacing, pady=self.ui_spacing)
 
     def call_info(self):
-        self.info = Character_info(self.grid, drop=self.drop)
+        self.info = CharacterInfo(self.grid, perks=self.perks, drop=self.drop)
         # self.load_data()
 
     def load_data(self):

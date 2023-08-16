@@ -22,7 +22,7 @@ class EnemyGroupWindow(Toplevel):
         self.grid.pack(fill='both')
 
         self.grid_left = Frame(self.grid)
-        self.grid_left.pack(side='left', fill='both')
+        self.grid_left.pack(side='left', fill='both', padx=10, pady=10)
         self.uncheck_all_enemies = Button(master=self.grid_left, command=self.call_uncheck_enemies, text='Uncheck all')
         self.uncheck_all_enemies.pack(side='bottom', fill='x')
         self.check_all_enemies = Button(master=self.grid_left, command=self.call_check_enemies, text='Check all')
@@ -32,7 +32,7 @@ class EnemyGroupWindow(Toplevel):
         self.sep.pack(side='left', fill='y', padx=self.ui_spacing, pady=self.ui_spacing)
 
         self.grid_mid = Frame(self.grid)
-        self.grid_mid.pack(side='left', fill='both')
+        self.grid_mid.pack(side='left', fill='both', padx=10, pady=10)
         self.uncheck_all_classes = Button(master=self.grid_mid, command=self.call_uncheck_classes, text='Uncheck all')
         self.uncheck_all_classes.pack(side='bottom', fill='x')
         self.check_all_classes = Button(master=self.grid_mid, command=self.call_check_classes, text='Check all')
@@ -42,7 +42,7 @@ class EnemyGroupWindow(Toplevel):
         self.sep2.pack(side='left', fill='y', padx=self.ui_spacing, pady=self.ui_spacing)
 
         self.grid_right = Frame(self.grid)
-        self.grid_right.pack(side='left', fill='both')
+        self.grid_right.pack(side='left', fill='both', padx=10, pady=10)
         self.label_level = Label(self.grid_right, text='Poziom wrogów')
         self.label_level.pack(fill='x', padx=self.ui_spacing, pady=self.ui_spacing)
         self.min_level = Spinbox(self.grid_right, from_=1, to=100)
