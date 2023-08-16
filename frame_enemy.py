@@ -1,5 +1,5 @@
 from tkinter import ttk, Tk, Frame, Label, Entry, Spinbox, StringVar
-from character import Character
+from frame_character import Character
 
 
 class Enemy(Character):

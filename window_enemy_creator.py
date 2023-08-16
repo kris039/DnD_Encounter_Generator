@@ -1,16 +1,15 @@
 from tkinter import ttk, Tk, Frame, Label, Button, Toplevel, filedialog, StringVar, Listbox, END
 from pandas import read_csv, DataFrame
-from encounter_window import Encounter
 
 
-class Generator(Toplevel):
-    def __init__(self, master):
+class Creator(Toplevel):
+    def __init__(self, master, generator, enemy_inp):
         super().__init__(master)
         self.grid_main = Frame(self)
         self.grid_main.pack(fill='both')
 
         # self.root.iconbitmap(r'')
-        self.minsize(400, 300)
+        self.minsize(500, 200)
         self.resizable(False, False)
         self.title("EnGen")
 
@@ -18,6 +17,8 @@ class Generator(Toplevel):
         self.classbook = ''
         self.party_save_path = StringVar()
         self.party_save_path.set('')
+        self.generator = generator
+        self.enemy_inp = enemy_inp
 
         self.monster_choice = Frame(self.grid_main)
         self.monster_choice.pack(fill='x', padx=5, pady=5)
@@ -37,24 +38,10 @@ class Generator(Toplevel):
         self.monster_off.pack(padx=5, pady=5)
         self.monster_right = Listbox(self.monster_choice)
         self.monster_right.pack(fill='x', expand=True, side='left', padx=5, pady=5)
-        self.path = Label(self.grid_main, textvariable=self.party_save_path)
-        self.path.pack(fill='x', padx=5, pady=5)
-        self.load = Button(self.grid_main, text='Wczytaj istniejącą drużynę', command=self.call_load)
-        self.load.pack(fill='x', padx=5, pady=5)
-        self.new = Button(self.grid_main, text='Generuj nową drużynę', command=self.call_new)
-        self.new.pack(fill='x', padx=5, pady=5)
-        self.fight = Button(self.grid_main, text='Walcz', command=self.call_fight)
-        self.fight.pack(fill='x', padx=5, pady=5)
+        self.button_ok = Button(self.grid_main, text='OK', command=self.call_ok)
+        self.button_ok.pack(fill='x', padx=5, pady=5)
 
         self.load_data()
-
-    def call_load(self):
-        path = filedialog.askopenfilename()
-        if path != '':
-            self.party_save_path.set(path)
-
-    def call_new(self):
-        self.party_save_path.set('')
 
     def load_data(self):
         self.enemybook = read_csv('tables/enemies.csv', sep=';')
@@ -70,10 +57,6 @@ class Generator(Toplevel):
     def call_remove(self):
         self.monster_right.delete(self.monster_right.curselection()[0])
 
-    def call_fight(self):
-        self.master.encounter = Encounter(self.master, self.party_save_path.get(), self.monster_right.get(0, END))
-
-
-if __name__ == "__main__":
-    enemybook = read_csv('tables/enemies.csv', sep=';')
-    print((enemybook[enemybook['Przeciwnik'] != 'Ork']['Klasa']))
+    def call_ok(self):
+        self.generator(self.monster_right.get(0, END))
+        self.destroy()

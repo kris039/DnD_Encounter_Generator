@@ -1,5 +1,5 @@
 from tkinter import ttk, Tk, Frame, Label, Entry, Spinbox, StringVar, Button
-from character_info import Character_info
+from window_character_info import Character_info
 
 
 class Character(Frame):
