@@ -1,5 +1,6 @@
 from tkinter import ttk, Tk, Frame, Label, Entry, Spinbox, StringVar, Button
 from window_character_info import Character_info
+from pandas import read_csv
 
 
 class Character(Frame):
@@ -25,6 +26,7 @@ class Character(Frame):
         self.wytr = StringVar()
         self.ref = StringVar()
         self.wola = StringVar()
+        self.weapons_df = []
 
         self.name.set(name)
         self.status.set('character')
@@ -87,3 +89,11 @@ class Character(Frame):
 
     def call_info(self):
         self.info = Character_info(self.grid, drop=self.drop)
+        # self.load_data()
+
+    def load_data(self):
+        self.weapons_df = read_csv('tables/weapons.csv', sep=';')
+        # enemies_df.loc[enemies_df['Przeciwnik'] == r[0]]
+        print(self.weapons_df['Broń'])
+        print(self.weapons_df.loc[self.weapons_df['Broń'] == self.att1.get()])
+

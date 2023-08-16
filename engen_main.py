@@ -9,6 +9,7 @@ from back_enemy_generator import generate_enemy
 from window_enemy_group import EnemyGroupWindow
 from window_enemy_creator import Creator
 from window_delete_character import DeleteCharacterWindow
+from back_attack import attack
 
 
 class EnGen:
@@ -23,6 +24,7 @@ class EnGen:
         self.characters = []
         self.character_list = []
         self.id_count = 0
+        self.weapons_df = read_csv('tables/weapons.csv', sep=';')
 
         self.attack_from_name = StringVar()
         self.attack_to_name = StringVar()
@@ -82,7 +84,7 @@ class EnGen:
         self.attack2.grid(row=3, column=1, columnspan=1, sticky='we', padx=2, pady=2)
         self.refresh = Button(master=self.attack_panel, command=self.call_refresh, text='Odśwież')
         self.refresh.grid(row=4, column=0, columnspan=2, sticky='we', padx=2, pady=2)
-        self.test = Button(master=self.attack_panel, command=self.call_test, text='TEST')
+        self.test = Button(master=self.attack_panel, command=self.call_test, text='TEST LOAD')
         self.test.grid(row=5, column=0, columnspan=2, sticky='we', padx=2, pady=2)
         self.dices = DicePack(self.right_panel, self.add_to_log)
         self.dices.pack(side='bottom')
@@ -135,32 +137,11 @@ class EnGen:
 
     def call_attack(self, att):
         if self.check():
-            attacker = self.attack_from_name.get()
-            attacked = self.attack_to_name.get()
+            attacker = self.find_char_by_name(self.attack_from_name.get())
+            attacked = self.find_char_by_name(self.attack_to_name.get())
 
             if attacker != '' and attacked != '':
-                self.battle_log_text += '\n' + attacker + ' zaatakował ' + attacked
-                hit_throw = random.randint(1, 20)
-                if hit_throw >= 20:
-                    self.battle_log_text += ('\n\t' + attacker + ': Rzut k20 na trafienie: ' + str(hit_throw)
-                                             + ' - TRAFIENIE KRYTYCZNE')
-                    dmg = 0
-                    for i in range(3):
-                        dmg_throw = random.randint(1, 8)
-                        dmg += dmg_throw
-                        self.battle_log_text += ('\n\t' + attacker + ': Rzut k8(t) na obrażenia: ' + str(dmg_throw))
-                    self.battle_log_text += '\n\t' + attacker + ' zadał ' + str(dmg) + ' punktów obrażeń'
-                elif hit_throw >= 12:
-                    self.battle_log_text += '\n\t' + attacker + ': Rzut k20 na trafienie: ' + str(hit_throw)
-                    dmg = 0
-                    dmg_throw = random.randint(1, 8)
-                    dmg += dmg_throw
-                    self.battle_log_text += ('\n\t' + attacker + ': Rzut k8(t) na obrażenia: ' + str(dmg_throw))
-                    self.battle_log_text += '\n\t' + attacker + ' zadał punktów obrażeń ' + str(dmg)
-
-                else:
-                    self.battle_log_text += '\n\t' + attacker + ': Rzut k20 na trafienie: ' + str(hit_throw)
-                    self.battle_log_text += '\n\t' + attacker + ' chybił'
+                self.battle_log_text += attack(attacker, attacked, self.weapons_df, att)
             self.call_refresh()
 
     def call_refresh(self):
@@ -246,6 +227,11 @@ class EnGen:
     def add_to_log(self, text):
         self.battle_log_text += text
         self.call_refresh()
+
+    def find_char_by_name(self, name):
+        for c in self.characters:
+            if name == c.name.get():
+                return c
 
     def check(self):
         if len(self.character_list) == len(set(self.character_list)):
