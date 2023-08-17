@@ -86,6 +86,8 @@ class EnGen:
         self.refresh.grid(row=4, column=0, columnspan=2, sticky='we', padx=2, pady=2)
         self.test = Button(master=self.attack_panel, command=self.call_test, text='TEST LOAD')
         self.test.grid(row=5, column=0, columnspan=2, sticky='we', padx=2, pady=2)
+        self.test = Button(master=self.attack_panel, command=self.call_test2, text='TEST GEN')
+        self.test.grid(row=6, column=0, columnspan=2, sticky='we', padx=2, pady=2)
         self.dices = DicePack(self.right_panel, self.add_to_log)
         self.dices.pack(side='bottom')
 
@@ -94,6 +96,9 @@ class EnGen:
 
     def call_test(self):
         self.call_open(path='test_csv.csv')
+
+    def call_test2(self):
+        self.generate_enemies(['Kobold, Barbarzyńca, 3'])
 
     def call_choose_enemy(self):
         enemy_inp = []

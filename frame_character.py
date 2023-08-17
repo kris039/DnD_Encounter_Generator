@@ -1,11 +1,11 @@
 from tkinter import ttk, Tk, Frame, Label, Entry, Spinbox, StringVar, Button
 from window_character_info import CharacterInfo
-from pandas import read_csv
+from pandas import read_csv, DataFrame
 
 
 class Character(Frame):
     def __init__(self, master, char_id, name, hp, kp, att1, att1_mod, att1_dmg_mod, att2, att2_mod, att2_dmg_mod,
-                 wytr, ref, wola, perks=(), drop=()):
+                 wytr, ref, wola, additional=DataFrame()):
         super().__init__(master)
         self.character_id = char_id
         self.ui_spacing = 2
@@ -41,8 +41,7 @@ class Character(Frame):
         self.wytr.set(wytr)
         self.ref.set(ref)
         self.wola.set(wola)
-        self.perks = perks
-        self.drop = drop
+        self.additional = additional
 
         self.label_name = Entry(self.grid, textvariable=self.name)
         self.label_name.grid(row=0, column=0, columnspan=2, sticky='we', padx=self.ui_spacing, pady=self.ui_spacing)
@@ -89,7 +88,7 @@ class Character(Frame):
         self.field_wola.grid(row=7, column=2, padx=self.ui_spacing, pady=self.ui_spacing)
 
     def call_info(self):
-        self.info = CharacterInfo(self.grid, perks=self.perks, drop=self.drop)
+        self.info = CharacterInfo(self.grid, self.add_info, additional=self.additional)
         # self.load_data()
 
     def load_data(self):
@@ -97,4 +96,7 @@ class Character(Frame):
         # enemies_df.loc[enemies_df['Przeciwnik'] == r[0]]
         print(self.weapons_df['Broń'])
         print(self.weapons_df.loc[self.weapons_df['Broń'] == self.att1.get()])
+
+    def add_info(self, row=DataFrame()):
+        self.additional = self.additional.append(row)
 
