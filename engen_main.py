@@ -58,11 +58,11 @@ class EnGen:
         self.menubar.add_cascade(label="Wrogowie", menu=self.enemymenu)
         self.root.config(menu=self.menubar)
 
-        self.grid_top = Frame(self.grid_main, background='green')
+        self.grid_top = Frame(self.grid_main)
         self.grid_top.pack(side='top')
         self.grid_middle = Frame(master=self.grid_main)
         self.grid_middle.pack(fill='both', expand=True)
-        self.grid_bottom = Frame(master=self.grid_main, background='red')
+        self.grid_bottom = Frame(master=self.grid_main)
         self.grid_bottom.pack(side='bottom')
 
         self.battle_log_text = 'BattleLog started'

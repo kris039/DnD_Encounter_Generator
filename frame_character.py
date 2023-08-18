@@ -28,7 +28,10 @@ class Character(Frame):
         self.wola = StringVar()
         self.weapons_df = []
 
-        self.name.set(name)
+        if self.character_id != '':
+            self.name.set(name + ' ID:' + str(self.character_id))
+        else:
+            self.name.set(name)
         self.status.set('character')
         self.hp.set(hp)
         self.kp.set(kp)
@@ -68,13 +71,13 @@ class Character(Frame):
         self.field_hp.grid(row=1, column=1, padx=self.ui_spacing, pady=self.ui_spacing)
         self.field_kp = Spinbox(self.grid, from_=-10, to=100, textvariable=self.kp, width=10)
         self.field_kp.grid(row=1, column=2, padx=self.ui_spacing, pady=self.ui_spacing)
-        self.field_att1 = Entry(self.grid, textvariable=self.att1)
+        self.field_att1 = Label(self.grid, textvariable=self.att1)
         self.field_att1.grid(row=2, column=1, columnspan=2, padx=self.ui_spacing, pady=self.ui_spacing)
         self.field_att1_mod = Spinbox(self.grid, from_=-10, to=100, textvariable=self.att1_mod, width=10)
         self.field_att1_mod.grid(row=3, column=1, padx=self.ui_spacing, pady=self.ui_spacing)
         self.field_att1_dmg_mod = Spinbox(self.grid, from_=-10, to=100, textvariable=self.att1_dmg_mod, width=10)
         self.field_att1_dmg_mod.grid(row=3, column=2, padx=self.ui_spacing, pady=self.ui_spacing)
-        self.field_att2 = Entry(self.grid, textvariable=self.att2)
+        self.field_att2 = Label(self.grid, textvariable=self.att2)
         self.field_att2.grid(row=4, column=1, columnspan=2, padx=self.ui_spacing, pady=self.ui_spacing)
         self.field_att2_mod = Spinbox(self.grid, from_=-10, to=100, textvariable=self.att2_mod, width=10)
         self.field_att2_mod.grid(row=5, column=1, padx=self.ui_spacing, pady=self.ui_spacing)
@@ -88,7 +91,8 @@ class Character(Frame):
         self.field_wola.grid(row=7, column=2, padx=self.ui_spacing, pady=self.ui_spacing)
 
     def call_info(self):
-        self.info = CharacterInfo(self.grid, self.add_info, additional=self.additional)
+        self.info = CharacterInfo(self.grid, self.change_weapon, self.add_info,
+                                  self.att1.get(), self.att2.get(), additional=self.additional)
         # self.load_data()
 
     def load_data(self):
@@ -99,4 +103,8 @@ class Character(Frame):
 
     def add_info(self, row=DataFrame()):
         self.additional = self.additional.append(row)
+
+    def change_weapon(self, att1, att2):
+        self.att1.set(att1)
+        self.att2.set(att2)
 

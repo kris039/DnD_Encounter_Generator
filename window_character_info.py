@@ -1,10 +1,12 @@
 from tkinter import ttk, Tk, Frame, Label, Entry, StringVar, Button, Toplevel
 from window_add_info import AddInfo
+from window_change_weapon import ChangeWeapon
 from pandas import DataFrame
+from functools import partial
 
 
 class CharacterInfo(Toplevel):
-    def __init__(self, master, add_info_func, additional=DataFrame()):
+    def __init__(self, master, change_weapon_func, add_info_func, att1, att2, additional=DataFrame()):
         super().__init__(master)
         self.ui_spacing = 2
 
@@ -14,11 +16,35 @@ class CharacterInfo(Toplevel):
         self.grid = Frame(self)
         self.grid.pack(fill='both', padx=10, pady=10)
 
+        self.change_weapon_func = change_weapon_func
         self.add_info_func = add_info_func
         self.additional = additional
+        self.att1 = StringVar()
+        self.att2 = StringVar()
         self.perks = StringVar()
         self.spells = StringVar()
         self.item = StringVar()
+
+        self.att1.set(att1)
+        self.att2.set(att2)
+
+        self.frame_weapons = Frame(self.grid)
+        self.frame_weapons.pack(expand=True, padx=self.ui_spacing, pady=self.ui_spacing)
+        self.title_w1 = Label(self.frame_weapons, text='Broń 1:')
+        self.title_w1.grid(row=0, column=0, sticky='we', padx=self.ui_spacing, pady=self.ui_spacing)
+        self.label_w1 = Label(self.frame_weapons, textvariable=self.att1)
+        self.label_w1.grid(row=0, column=1, sticky='we', padx=self.ui_spacing, pady=self.ui_spacing)
+        self.button_w1 = Button(self.frame_weapons, text='Zmień', command=partial(self.call_change_weapon, 1))
+        self.button_w1.grid(row=0, column=2, sticky='we', padx=self.ui_spacing, pady=self.ui_spacing)
+        self.title_w2 = Label(self.frame_weapons, text='Broń 2:')
+        self.title_w2.grid(row=2, column=0, sticky='we', padx=self.ui_spacing, pady=self.ui_spacing)
+        self.label_w2 = Label(self.frame_weapons, textvariable=self.att2)
+        self.label_w2.grid(row=2, column=1, sticky='we', padx=self.ui_spacing, pady=self.ui_spacing)
+        self.button_w2 = Button(self.frame_weapons, text='Zmień', command=partial(self.call_change_weapon, 2))
+        self.button_w2.grid(row=2, column=2, columnspan=2, sticky='we', padx=self.ui_spacing, pady=self.ui_spacing)
+
+        self.sep = ttk.Separator(self.grid, orient='horizontal')
+        self.sep.pack(fill='x', padx=self.ui_spacing, pady=self.ui_spacing)
 
         self.frame_perks = Frame(self.grid)
         self.frame_perks.pack(fill='both', padx=self.ui_spacing, pady=self.ui_spacing)
@@ -87,4 +113,15 @@ class CharacterInfo(Toplevel):
         self.additional = self.additional.append(row)
         self.add_info_func(row)
         self.display_additional()
+
+    def call_change_weapon(self, num):
+        win = ChangeWeapon(self, self.change_weapon, num)
+
+    def change_weapon(self, name, num):
+        if num == 1:
+            self.att1.set(name)
+        elif num == 2:
+            self.att2.set(name)
+        self.change_weapon_func(self.att1.get(), self.att2.get())
+
 

@@ -3,7 +3,7 @@ import random
 
 def attack(attacker, attacked, weapons_df, nr):
     text = ''
-    weapon = weapons_df.loc[weapons_df['Broń'] == attacker.att1.get()]
+    weapon = weapons_df.loc[weapons_df['Nazwa'] == attacker.att1.get()]
     dmg = 0
     att_mod = 0
     dmg_mod = 0
