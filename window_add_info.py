@@ -9,7 +9,7 @@ class AddInfo(Toplevel):
         self.ui_spacing = 2
 
         self.title("Add info")
-        self.minsize(200, 200)
+        self.minsize(200, 100)
 
         self.func = func
 
@@ -27,11 +27,11 @@ class AddInfo(Toplevel):
             desc = ''
             if info_type == 'perk':
                 desc += str(row['Nazwa']) + ' -> ' + str(row['Info'])
-                desc += '\tAtt mod/Dmg mod -> ' + str(row['Att_mod']) + '/' + str(row['Dmg_mod']) + '\n'
+                desc += '\tAtt mod/Dmg mod -> ' + str(row['Att_mod']) + '/' + str(row['Dmg_mod'])
             elif info_type == 'spell':
                 pass
             else:
-                desc = str(row['Nazwa']) + ' -> ' + str(row['Info'] + '\n')
+                desc = str(row['Nazwa']) + ' -> ' + str(row['Info'])
 
             frame_item = Frame(self.grid)
             frame_item.pack(fill='x', padx=self.ui_spacing, pady=self.ui_spacing)

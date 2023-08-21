@@ -10,6 +10,7 @@ from window_enemy_group import EnemyGroupWindow
 from window_enemy_creator import Creator
 from window_delete_character import DeleteCharacterWindow
 from back_attack import attack
+from back_save_file_functions import *
 
 
 class EnGen:
@@ -44,7 +45,7 @@ class EnGen:
         self.partymenu.add_command(label="Otworz party", command=self.call_open)
         self.partymenu.add_command(label="Zapisz party", command=self.call_save_party)
         self.partymenu.add_separator()
-        self.partymenu.add_command(label="Dodaj gracza", command=self.call_add_player)
+        self.partymenu.add_command(label="Dodaj gracza", command=self.add_player)
         self.menubar.add_cascade(label="Gracze", menu=self.partymenu)
 
         self.enemymenu = Menu(self.menubar, tearoff=0)
@@ -54,7 +55,7 @@ class EnGen:
         self.enemymenu.add_command(label="Wybierz przeciwników", command=self.call_choose_enemy)
         self.enemymenu.add_command(label="Generuj losowych przeciwników", command=self.call_enemy_group)
         self.enemymenu.add_separator()
-        self.enemymenu.add_command(label="Dodaj wroga", command=self.call_add_enemy)
+        self.enemymenu.add_command(label="Dodaj wroga", command=self.add_enemy)
         self.menubar.add_cascade(label="Wrogowie", menu=self.enemymenu)
         self.root.config(menu=self.menubar)
 
@@ -93,12 +94,6 @@ class EnGen:
 
         self.call_refresh()
         self.root.mainloop()
-
-    def call_test(self):
-        self.call_open(path='test_csv.csv')
-
-    def call_test2(self):
-        self.generate_enemies(['Kobold, Barbarzyńca, 3'])
 
     def call_choose_enemy(self):
         enemy_inp = []
@@ -159,22 +154,7 @@ class EnGen:
         self.check()
 
     def call_open(self, path='', who=''):
-        if path == '':
-            path = filedialog.askopenfilename(defaultextension='.csv')
-        if path != '':
-            loaded = read_csv(path, sep=';')
-            for i, j in loaded.iterrows():
-                if j[0] == 'Gracz':
-                    char = Player(self.grid_top, self.id_count, *j[1:])
-                    self.id_count += 1
-                    self.characters.append(char)
-                    char.pack(side='left', padx=2, pady=2)
-                if j[0] == 'Przeciwnik':
-                    char = Enemy(self.grid_bottom, self.id_count, *j[1:])
-                    self.id_count += 1
-                    self.characters.append(char)
-                    char.pack(side='left', padx=2, pady=2)
-        self.call_refresh()
+        load_characters(self.add_player, self.add_enemy, who=who, path=path)
 
     def call_save_party(self):
         self.call_save('Gracz')
@@ -183,47 +163,21 @@ class EnGen:
         self.call_save('Przeciwnik')
 
     def call_save(self, who=''):
-        def save(c, wh):
-            if c.status.get() != wh:
-                character_dict["Status"].append(c.status.get())
-                character_dict["Imię"].append(c.name.get())
-                character_dict["HP"].append(c.hp.get())
-                character_dict["KP"].append(c.kp.get())
-                character_dict["Atak 1"].append(c.att1.get())
-                character_dict["Mod 1"].append(c.att1_mod.get())
-                character_dict["Dmg mod 1"].append(c.att1_dmg_mod.get())
-                character_dict["Atak 2"].append(c.att2.get())
-                character_dict["Mod 2"].append(c.att2_mod.get())
-                character_dict["Dmg mod 2"].append(c.att2_dmg_mod.get())
-                character_dict["Wytr"].append(c.wytr.get())
-                character_dict["Ref"].append(c.ref.get())
-                character_dict["Wola"].append(c.wola.get())
+        save_characters(self.characters)
 
-        path = filedialog.asksaveasfilename(defaultextension='.csv')
-        if path != '':
-            character_dict = {"Status": [], "Imię": [], "HP": [], "KP": [],
-                              "Atak 1": [], "Mod 1": [], "Dmg mod 1": [],
-                              "Atak 2": [], "Mod 2": [], "Dmg mod 2": [],
-                              "Wytr": [], "Ref": [], "Wola": []}
-
-            for p in self.characters:
-                if who == 'Gracz':
-                    save(p, 'Przeciwnik')
-                elif who == 'Przeciwnik':
-                    save(p, 'Gracz')
-                else:
-                    save(p, '')
-            DataFrame(character_dict).to_csv(path, ';', index=False)
-
-    def call_add_player(self):
-        player = Player(self.grid_top, self.id_count, "Gracz " + str(self.id_count), *range(1, 12))
+    def add_player(self, char_dict=()):
+        if char_dict == ():
+            char_dict = create_dummy_char_dict('Gracz')
+        player = Player(self.grid_top, self.id_count, char_dict)
         self.id_count += 1
         self.characters.append(player)
         player.pack(side='left', padx=2, pady=2)
         self.call_refresh()
 
-    def call_add_enemy(self):
-        enemy = Enemy(self.grid_bottom, self.id_count, "Przeciwnik " + str(self.id_count), *range(1, 12))
+    def add_enemy(self, char_dict=()):
+        if char_dict == ():
+            char_dict = create_dummy_char_dict('Przeciwnik')
+        enemy = Enemy(self.grid_bottom, self.id_count, char_dict)
         self.id_count += 1
         self.characters.append(enemy)
         enemy.pack(side='left', padx=2, pady=2)
@@ -252,6 +206,12 @@ class EnGen:
             if i.name.get() != '' and int(i.hp.get()) > 0:
                 self.character_list.append(i.name.get())
         self.character_list.sort()
+
+    def call_test(self):
+        self.call_open(path='test_csv.csv')
+
+    def call_test2(self):
+        self.generate_enemies(['Kobold, Barbarzyńca, 15'])
 
 
 if __name__ == "__main__":
