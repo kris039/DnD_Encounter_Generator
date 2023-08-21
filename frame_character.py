@@ -23,6 +23,7 @@ class Character(Frame):
         self.att2 = StringVar()
         self.att2_mod = StringVar()
         self.att2_dmg_mod = StringVar()
+        self.class_mod = StringVar()
         self.wytr = StringVar()
         self.ref = StringVar()
         self.wola = StringVar()
@@ -64,8 +65,10 @@ class Character(Frame):
         self.label_att2.grid(row=4, column=0, padx=self.ui_spacing, pady=self.ui_spacing)
         self.label_att2_mod = Label(self.grid, text="Mod/dmg mod")
         self.label_att2_mod.grid(row=5, column=0, padx=self.ui_spacing, pady=self.ui_spacing)
+        self.label_class_mod = Label(self.grid, text="Modyfikator klasy")
+        self.label_class_mod.grid(row=6, column=0, padx=self.ui_spacing, pady=self.ui_spacing)
         self.label_safe = Label(self.grid, text="Wytr/Ref/Wola")
-        self.label_safe.grid(row=6, column=0, columnspan=3, padx=self.ui_spacing, pady=self.ui_spacing)
+        self.label_safe.grid(row=7, column=0, columnspan=3, padx=self.ui_spacing, pady=self.ui_spacing)
 
         self.field_hp = Spinbox(self.grid, from_=-10, to=100, textvariable=self.hp, width=10)
         self.field_hp.grid(row=1, column=1, padx=self.ui_spacing, pady=self.ui_spacing)
@@ -83,12 +86,14 @@ class Character(Frame):
         self.field_att2_mod.grid(row=5, column=1, padx=self.ui_spacing, pady=self.ui_spacing)
         self.field_att2_dmg_mod = Spinbox(self.grid, from_=-10, to=100, textvariable=self.att2_dmg_mod, width=10)
         self.field_att2_dmg_mod.grid(row=5, column=2, padx=self.ui_spacing, pady=self.ui_spacing)
+        self.field_class_mod = Label(self.grid, textvariable=self.class_mod, width=10)
+        self.field_class_mod.grid(row=6, column=1, columnspan=2, padx=self.ui_spacing, pady=self.ui_spacing)
         self.field_wytr = Spinbox(self.grid, from_=-10, to=100, textvariable=self.wytr, width=10)
-        self.field_wytr.grid(row=7, column=0, padx=self.ui_spacing, pady=self.ui_spacing)
+        self.field_wytr.grid(row=8, column=0, padx=self.ui_spacing, pady=self.ui_spacing)
         self.field_ref = Spinbox(self.grid, from_=-10, to=100, textvariable=self.ref, width=10)
-        self.field_ref.grid(row=7, column=1, padx=self.ui_spacing, pady=self.ui_spacing)
+        self.field_ref.grid(row=8, column=1, padx=self.ui_spacing, pady=self.ui_spacing)
         self.field_wola = Spinbox(self.grid, from_=-10, to=100, textvariable=self.wola, width=10)
-        self.field_wola.grid(row=7, column=2, padx=self.ui_spacing, pady=self.ui_spacing)
+        self.field_wola.grid(row=8, column=2, padx=self.ui_spacing, pady=self.ui_spacing)
 
     def call_info(self):
         self.info = CharacterInfo(self.grid, self.change_weapon, self.add_info,
@@ -108,3 +113,5 @@ class Character(Frame):
         self.att1.set(att1)
         self.att2.set(att2)
 
+    def refresh_data(self):
+        pass

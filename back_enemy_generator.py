@@ -6,6 +6,8 @@ from pandas import read_csv, isna, DataFrame
 def generate_enemy(r, enemy_r, class_r):
     perks_df = read_csv('tables/perks.csv', sep=';')
     items_df = read_csv('tables/consumables.csv', sep=';')
+    lv_perks_df = read_csv('tables/lv_skills.csv', sep=';')
+    lv_drop_df = read_csv('tables/lv_items.csv', sep=';')
     name = (r[0] + ' ' + r[1] + ' lv ' + r[2])
     hp = int(enemy_r['KW_mod'].iloc[0] * random.randint(1, enemy_r['KW_k'].iloc[0]))
     if hp == 0:
@@ -25,7 +27,10 @@ def generate_enemy(r, enemy_r, class_r):
     wola = enemy_r['Wola'].iloc[0]
 
     additional_dict = {"Typ": [], "Nazwa": [], "Info": [], "Att_mod": [], "Dmg_mod": []}
-    for i in range(int(r[2])):
+
+    bonus_row = lv_perks_df.loc[lv_perks_df['Poziom'] == int(r[2])]
+
+    for i in range(bonus_row['Atuty'].iloc[0]):
         perk = perks_df.iloc[random.randint(0, len(perks_df)-1)]
         additional_dict["Typ"].append(perk['Typ'])
         additional_dict["Nazwa"].append(perk['Nazwa'])
@@ -33,9 +38,11 @@ def generate_enemy(r, enemy_r, class_r):
         additional_dict["Att_mod"].append(perk['Att_mod'])
         additional_dict["Dmg_mod"].append(perk['Dmg_mod'])
 
+    items_row = lv_drop_df.loc[lv_drop_df['Poziom'] == int(r[2])]
     items = enemy_r['Item'].iloc[0]
+    items2 = items_row['Item'].iloc[0]
     if not isna(items):
-        for i in items.split(','):
+        for i in items.split(',') + items2.split(','):
             if float(i.split('/')[1]) >= random.randint(0, 100) / 100:
                 item = items_df.loc[items_df['Nazwa'] == i.split('/')[0]]
                 additional_dict["Typ"].append(item['Typ'].iloc[0])
@@ -44,8 +51,5 @@ def generate_enemy(r, enemy_r, class_r):
                 additional_dict["Att_mod"].append(item['Att_mod'].iloc[0])
                 additional_dict["Dmg_mod"].append(item['Dmg_mod'].iloc[0])
 
-    # print(additional_dict)
     additional = DataFrame(additional_dict)
-    # pandas.set_option('display.max_columns', None)
-    # print(additional)
     return [name, hp, kp, att1, att1_mod, att1_dmg_mod, att2, att2_mod, att2_dmg_mod, wytr, ref, wola, additional]
