@@ -69,7 +69,8 @@ class EnGen:
         self.grid_bottom.pack(side='bottom')
 
         self.battle_log_text = 'BattleLog started'
-        self.battle_log_display = Text(master=self.grid_middle, background='white', height=15)
+        self.battle_log_display = Text(master=self.grid_middle, background='white', height=15, width=100)
+        self.battle_log_display.configure(font=('Segoe UI', 12, 'normal'))
         self.battle_log_display.pack(side='left', fill='both', expand=True, padx=2, pady=2)
         self.right_panel = Frame(master=self.grid_middle)
         self.right_panel.pack(side='right', fill='both', padx=2, pady=2)
