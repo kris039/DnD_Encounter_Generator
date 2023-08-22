@@ -1,7 +1,7 @@
 import random
 
 
-def attack(attacker, attacked, weapons_df, nr):
+def attack(attacker, attacked, weapons_df, nr, cl_mod):
     text = ''
     weapon = weapons_df.loc[weapons_df['Nazwa'] == attacker.att1.get()]
     dmg = 0
@@ -30,9 +30,10 @@ def attack(attacker, attacked, weapons_df, nr):
             text += ('\n\t' + attacker.name.get() + ': Rzut k' + str(weapon['Obrażenia'].iloc[0]) + ' na obrażenia: '
                      + str(dmg_throw) + ' + modyfikator obrażeń: ' + str(dmg_mod))
         text += '\n\t' + attacker.name.get() + ' zadał ' + str(dmg) + ' punktów obrażeń'
-    elif hit_throw + att_mod >= int(attacked.kp.get()):
+    elif hit_throw + att_mod + cl_mod >= int(attacked.kp.get()):
         text += '\n\t' + attacker.name.get() + ': Rzut k20 na trafienie: ' + str(hit_throw)
-        text += '\n\t' + 'KP: ' + attacked.kp.get() + ' vs Rzut: ' + str(hit_throw) + ' + modyfikator ataku: ' + str(att_mod)
+        text += ('\n\t' + 'KP: ' + attacked.kp.get() + ' vs Rzut: ' + str(hit_throw) +
+                 ' + modyfikator ataku: ' + str(att_mod) + ' + modyfikator clasy: ' + str(cl_mod))
         dmg_throw = random.randint(1, weapon['Obrażenia'].iloc[0])
         dmg += dmg_throw + dmg_mod
         text += ('\n\t' + attacker.name.get() + ': Rzut k' + str(weapon['Obrażenia'].iloc[0]) + ' na obrażenia: '
@@ -41,7 +42,8 @@ def attack(attacker, attacked, weapons_df, nr):
 
     else:
         text += '\n\t' + attacker.name.get() + ': Rzut k20 na trafienie: ' + str(hit_throw)
-        text += '\n\t' + 'KP: ' + attacked.kp.get() + ' vs Rzut+mod: ' + str(hit_throw) + str(att_mod)
+        text += ('\n\t' + 'KP: ' + attacked.kp.get() + ' vs Rzut: ' + str(hit_throw) +
+                 ' + modyfikator ataku: ' + str(att_mod) + ' + modyfikator clasy: ' + str(cl_mod))
         text += '\n\t' + attacker.name.get() + ' chybił'
     return text
 

@@ -17,7 +17,7 @@ class EnGen:
     def __init__(self):
         self.root = Tk()
         # self.root.iconbitmap(r'')
-        self.root.minsize(400, 200)
+        self.root.minsize(600, 200)
         # self.root.resizable(False, True)
         self.root.resizable(False, False)
         self.root.title("EnGen")
@@ -25,6 +25,8 @@ class EnGen:
         self.characters = []
         self.character_list = []
         self.id_count = 0
+        self.attack_count = 1
+        self.previous_attacker = -1
         self.weapons_df = read_csv('tables/weapons.csv', sep=';')
 
         self.attack_from_name = StringVar()
@@ -141,7 +143,19 @@ class EnGen:
             attacked = self.find_char_by_name(self.attack_to_name.get())
 
             if attacker != '' and attacked != '':
-                self.battle_log_text += attack(attacker, attacked, self.weapons_df, att)
+                if self.previous_attacker != attacker.character_id:
+                    self.attack_count = 1
+                    self.previous_attacker = attacker.character_id
+                else:
+                    self.previous_attacker = attacker.character_id
+
+                class_mods = attacker.class_mod.get().split('/')
+                cl_mod = int(class_mods[self.attack_count-1])
+                print(self.attack_count, self.previous_attacker)
+
+                if self.attack_count < len(class_mods):
+                    self.attack_count += 1
+                self.battle_log_text += attack(attacker, attacked, self.weapons_df, att, cl_mod)
             self.call_refresh()
 
     def call_refresh(self):
@@ -212,6 +226,7 @@ class EnGen:
 
     def call_test2(self):
         self.generate_enemies(['Kobold, Barbarzyńca, 15'])
+        self.call_refresh()
 
 
 if __name__ == "__main__":
