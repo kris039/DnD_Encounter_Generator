@@ -38,8 +38,13 @@ class CharacterInfo(Toplevel):
         self.att1.set(att1)
         self.att2.set(att2)
 
-        self.frame_basic_info = Frame(self.grid)
-        self.frame_basic_info.pack(expand=True, padx=self.ui, pady=self.ui)
+        self.frame_left = Frame(self.grid)
+        self.frame_left.pack(side='left', padx=self.ui, pady=self.ui)
+        self.frame_right = Frame(self.grid)
+        self.frame_right.pack(side='right', padx=self.ui, pady=self.ui)
+
+        self.frame_basic_info = Frame(self.frame_left, borderwidth=2, relief="groove")
+        self.frame_basic_info.pack(padx=self.ui, pady=self.ui)
         self.title_class = Label(self.frame_basic_info, text='Klasa:')
         self.title_class.grid(row=0, column=0, sticky='we', padx=self.ui, pady=self.ui)
         self.label_class = OptionMenu(self.frame_basic_info, self.classs,
@@ -63,40 +68,37 @@ class CharacterInfo(Toplevel):
         self.button_w2 = Button(self.frame_basic_info, text='Zmień', command=partial(self.call_change_weapon, 2))
         self.button_w2.grid(row=3, column=2, columnspan=2, sticky='we', padx=self.ui, pady=self.ui)
 
-        self.sep = ttk.Separator(self.grid, orient='horizontal')
-        self.sep.pack(fill='x', padx=self.ui, pady=self.ui)
-
-        self.frame_perks = Frame(self.grid)
+        self.frame_perks_q = Frame(self.frame_left, borderwidth=2, relief="groove")
+        self.frame_perks_q.pack(fill='both', padx=self.ui, pady=self.ui)
+        self.frame_perks = Frame(self.frame_perks_q)
         self.frame_perks.pack(fill='both', padx=self.ui, pady=self.ui)
         self.title_perks = Label(self.frame_perks, text='Atuty')
         self.title_perks.pack(side='left', fill='both', padx=self.ui, pady=self.ui)
         self.button_perks = Button(self.frame_perks, text='Dodaj atuty', command=self.call_add_perk)
         self.button_perks.pack(side='right', fill='both', padx=self.ui, pady=self.ui)
-        self.label_perks = Label(self.grid, textvariable=self.perks)
+        self.label_perks = Label(self.frame_perks_q, textvariable=self.perks)
         self.label_perks.pack(fill='both', padx=self.ui, pady=self.ui)
 
-        self.sep = ttk.Separator(self.grid, orient='horizontal')
-        self.sep.pack(fill='x', padx=self.ui, pady=self.ui)
-
-        self.frame_spells = Frame(self.grid)
+        self.frame_spells_q = Frame(self.frame_right, borderwidth=2, relief="groove")
+        self.frame_spells_q.pack(fill='both', padx=self.ui, pady=self.ui)
+        self.frame_spells = Frame(self.frame_spells_q)
         self.frame_spells.pack(fill='both', padx=self.ui, pady=self.ui)
         self.title_spells = Label(self.frame_spells, text='Zaklęcia')
         self.title_spells.pack(side='left', fill='both', padx=self.ui, pady=self.ui)
         self.button_spells = Button(self.frame_spells, text='Dodaj zaklęcia', command=self.call_add_skill)
         self.button_spells.pack(side='right', fill='both', padx=self.ui, pady=self.ui)
-        self.label_spells = Label(self.grid, textvariable=self.spells)
+        self.label_spells = Label(self.frame_spells_q, textvariable=self.spells)
         self.label_spells.pack(fill='both', padx=self.ui, pady=self.ui)
 
-        self.sep = ttk.Separator(self.grid, orient='horizontal')
-        self.sep.pack(fill='x', padx=self.ui, pady=self.ui)
-
-        self.frame_item = Frame(self.grid)
+        self.frame_item_q = Frame(self.frame_right, borderwidth=2, relief="groove")
+        self.frame_item_q.pack(fill='both', padx=self.ui, pady=self.ui)
+        self.frame_item = Frame(self.frame_item_q)
         self.frame_item.pack(fill='both', padx=self.ui, pady=self.ui)
         self.title_item = Label(self.frame_item, text='Przedmioty')
         self.title_item.pack(side='left', fill='both', padx=self.ui, pady=self.ui)
         self.button_item = Button(self.frame_item, text='Dodaj przedmioty', command=self.call_add_item)
         self.button_item.pack(side='right', fill='both', padx=self.ui, pady=self.ui)
-        self.label_item = Label(self.grid, textvariable=self.item)
+        self.label_item = Label(self.frame_item_q, textvariable=self.item)
         self.label_item.pack(fill='both', padx=self.ui, pady=self.ui)
 
         self.display_additional()
@@ -106,7 +108,6 @@ class CharacterInfo(Toplevel):
         spell_str = '\n'
         item_str = '\n'
         for index, row in self.additional.iterrows():
-            # print(row)
             if row.loc['Typ'] == 'Atut':
                 perk_str += (str(row['Nazwa']) + ' -> ' + str(row['Info'])
                              + '\n\tAtt mod/Dmg mod -> ' + str(row['Att_mod']) + '/' + str(row['Dmg_mod']) + '\n\n')
