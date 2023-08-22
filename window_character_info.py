@@ -1,8 +1,7 @@
-from tkinter import ttk, Tk, Frame, Label, Entry, StringVar, Button, Toplevel, Scrollbar, Canvas
+from tkinter import ttk, Tk, Frame, Label, Entry, StringVar, Button, Toplevel, OptionMenu
 from window_add_info import AddInfo
 from window_change_weapon import ChangeWeapon
-from window_change_class import ChangeClass
-from pandas import DataFrame
+from pandas import DataFrame, read_csv
 from functools import partial
 
 
@@ -31,6 +30,8 @@ class CharacterInfo(Toplevel):
         self.perks = StringVar()
         self.spells = StringVar()
         self.item = StringVar()
+        self.class_list = []
+        self.fill_classes()
 
         self.classs.set(classs)
         self.level.set(level)
@@ -41,16 +42,14 @@ class CharacterInfo(Toplevel):
         self.frame_basic_info.pack(expand=True, padx=self.ui, pady=self.ui)
         self.title_class = Label(self.frame_basic_info, text='Klasa:')
         self.title_class.grid(row=0, column=0, sticky='we', padx=self.ui, pady=self.ui)
-        self.label_class = Label(self.frame_basic_info, textvariable=self.classs)
-        self.label_class.grid(row=0, column=1, sticky='we', padx=self.ui, pady=self.ui)
-        self.button_class = Button(self.frame_basic_info, text='Zmień', command=self.call_change_class)
-        self.button_class.grid(row=0, column=2, sticky='we', padx=self.ui, pady=self.ui)
+        self.label_class = OptionMenu(self.frame_basic_info, self.classs,
+                                      *self.class_list, command=self.change_class_func)
+        self.label_class.grid(row=0, column=1, columnspan=2, sticky='we', padx=self.ui, pady=self.ui)
         self.title_level = Label(self.frame_basic_info, text='Poziom:')
         self.title_level.grid(row=1, column=0, sticky='we', padx=self.ui, pady=self.ui)
-        self.label_level = Label(self.frame_basic_info, textvariable=self.level)
-        self.label_level.grid(row=1, column=1, sticky='we', padx=self.ui, pady=self.ui)
-        self.button_level = Button(self.frame_basic_info, text='Zmień', command=self.call_change_weapon)
-        self.button_level.grid(row=1, column=2, sticky='we', padx=self.ui, pady=self.ui)
+        self.label_level = OptionMenu(self.frame_basic_info, self.level,
+                                      *range(1, 21), command=self.change_level_func)
+        self.label_level.grid(row=1, column=1, columnspan=2, sticky='we', padx=self.ui, pady=self.ui)
         self.title_w1 = Label(self.frame_basic_info, text='Broń 1:')
         self.title_w1.grid(row=2, column=0, sticky='we', padx=self.ui, pady=self.ui)
         self.label_w1 = Label(self.frame_basic_info, textvariable=self.att1)
@@ -120,13 +119,6 @@ class CharacterInfo(Toplevel):
             self.spells.set(spell_str)
             self.item.set(item_str)
 
-    def call_change_class(self):
-        win = ChangeClass(self, self.change_class)
-
-    def change_class(self, classs):
-        self.classs.set(classs)
-        self.change_class_func(self.classs.get())
-
     def call_change_weapon(self, num):
         win = ChangeWeapon(self, self.change_weapon, num)
 
@@ -151,5 +143,6 @@ class CharacterInfo(Toplevel):
         self.add_info_func(row)
         self.display_additional()
 
-
-
+    def fill_classes(self):
+        class_df = read_csv('tables/classes.csv', sep=';')
+        self.class_list = class_df['Klasa'].to_list()
