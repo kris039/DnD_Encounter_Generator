@@ -42,20 +42,25 @@ def load_characters(func_add_player, func_add_enemy, who='', path=''):
         for i, j in loaded.iterrows():
             if j[0] == who or who == '':
                 if j['Status'] == 'Gracz':
-                    func_add_player(j.to_dict())
+                    adds = j['Additional_IDs'].split(',')
+                    func_add_player(j.to_dict(), get_add_df(adds))
                 if j['Status'] == 'Przeciwnik':
                     adds = j['Additional_IDs'].split(',')
-                    adds.remove('')
-                    add_df = DataFrame()
-                    if len(adds) != 0:
-                        for add in adds:
-                            if add[0] == 'p':
-                                add_df = add_df.append(get_perk_by_id(add), ignore_index=True)
-                            if add[0] == 's':
-                                add_df = add_df.append(get_perk_by_id(add), ignore_index=True)
-                            if add[0] == 'i':
-                                add_df = add_df.append(get_item_by_id(add), ignore_index=True)
-                    func_add_enemy(j.to_dict(), add_df)
+                    func_add_enemy(j.to_dict(), get_add_df(adds))
+
+
+def get_add_df(adds):
+    adds.remove('')
+    add_df = DataFrame()
+    if len(adds) != 0:
+        for add in adds:
+            if add[0] == 'p':
+                add_df = add_df.append(get_perk_by_id(add), ignore_index=True)
+            if add[0] == 's':
+                add_df = add_df.append(get_perk_by_id(add), ignore_index=True)
+            if add[0] == 'i':
+                add_df = add_df.append(get_item_by_id(add), ignore_index=True)
+    return add_df
 
 
 def create_dummy_char_dict(status):
