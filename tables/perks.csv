@@ -1,4 +1,4 @@
-Typ;Nazwa;Info;Att_mod;Dmg_mod
-Atut;(t)Mocny cios;Uderzasz mocno czy coś;-5;5
-Atut;(t)Słaby cios;Uderzasz słabo ale wchodzi;5;-5
-Atut;(t)Biegłość broni;Nie wiem, jakiś opis;0;0
+ID;Typ;Nazwa;Info;Att_mod;Dmg_mod
+p00;Atut;(t)Mocny cios;Uderzasz mocno czy coś;-5;5
+p01;Atut;(t)Słaby cios;Uderzasz słabo ale wchodzi;5;-5
+p02;Atut;(t)Biegłość broni;Nie wiem, jakiś opis;0;0

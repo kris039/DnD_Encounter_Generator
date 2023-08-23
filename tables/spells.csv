@@ -1,12 +1,12 @@
-Kategoria;NPC;Nazwa;Info
-Barbarzyńca;1;Mocny pierd;Mocno pierdzisz
-Bard;1;Ponętne zawodzenie;Strasznie zawodzisz
-Czarodziej;1;Jakiś pocisk;Pociskasz kogoś
-Druid;1;Magiczny patyk;Machasz patykiem
-Kapłan;1;Skadanie rąk;Składasz ręce
-Łotrzyk;1;Łotrowanie;Łotrujesz się
-Mnich;1;Skadanie rąk;Składasz ręce
-Paladyn;1;Świecenie;Świecisz
-Tropiciel;1;Magiczny trop;Zostawiasz magiczny trop
-Wojownik;1;Magiczne ostrze;Próbujesz użyć magii na mieczu
-Zaklinacz;1;Zaklinanie powietrza;Zaklinasz ale nic tu nie ma
+ID;Kategoria;NPC;Nazwa;Info
+sbr0;Barbarzyńca;1;Mocny pierd;Mocno pierdzisz
+sba0;Bard;1;Ponętne zawodzenie;Strasznie zawodzisz
+scz0;Czarodziej;1;Jakiś pocisk;Pociskasz kogoś
+sdr0;Druid;1;Magiczny patyk;Machasz patykiem
+ska0;Kapłan;1;Skadanie rąk;Składasz ręce
+sls0;Łotrzyk;1;Łotrowanie;Łotrujesz się
+smn0;Mnich;1;Skadanie rąk;Składasz ręce
+spa0;Paladyn;1;Świecenie;Świecisz
+str0;Tropiciel;1;Magiczny trop;Zostawiasz magiczny trop
+swo0;Wojownik;1;Magiczne ostrze;Próbujesz użyć magii na mieczu
+sza0;Zaklinacz;1;Zaklinanie powietrza;Zaklinasz ale nic tu nie ma

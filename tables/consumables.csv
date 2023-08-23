@@ -1,4 +1,4 @@
-Typ;Nazwa;Info;Att_mod;Dmg_mod
-Przedmiot;(t)Ziemniak;Powoduje bóle brzucha i biegunkę;-5;-5
-Przedmiot;(t)Potek leczący;Leczy;0;0
-Przedmiot;(t)Potek mielenia;Umiesz mielić;0;0
+ID;Typ;Nazwa;Info;Att_mod;Dmg_mod
+i00;Przedmiot;(t)Ziemniak;Powoduje bóle brzucha i biegunkę;-5;-5
+i01;Przedmiot;(t)Potek leczący;Leczy;0;0
+i02;Przedmiot;(t)Potek mielenia;Umiesz mielić;0;0

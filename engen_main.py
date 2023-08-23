@@ -180,19 +180,19 @@ class EnGen:
     def call_save(self, who=''):
         save_characters(self.characters)
 
-    def add_player(self, char_dict=()):
+    def add_player(self, char_dict=(), add_df=DataFrame()):
         if char_dict == ():
             char_dict = create_dummy_char_dict('Gracz')
-        player = Player(self.grid_top, self.id_count, char_dict)
+        player = Player(self.grid_top, self.id_count, char_dict, add_df)
         self.id_count += 1
         self.characters.append(player)
         player.pack(side='left', padx=2, pady=2)
         self.call_refresh()
 
-    def add_enemy(self, char_dict=()):
+    def add_enemy(self, char_dict=(), add_df=DataFrame()):
         if char_dict == ():
             char_dict = create_dummy_char_dict('Przeciwnik')
-        enemy = Enemy(self.grid_bottom, self.id_count, char_dict)
+        enemy = Enemy(self.grid_bottom, self.id_count, char_dict, add_df)
         self.id_count += 1
         self.characters.append(enemy)
         enemy.pack(side='left', padx=2, pady=2)

@@ -7,7 +7,7 @@ def generate_enemy(r, enemy_r, class_r):
     perks_df = read_csv('tables/perks.csv', sep=';')
     items_df = read_csv('tables/consumables.csv', sep=';')
     lv_perks_df = read_csv('tables/lv_skills.csv', sep=';')
-    lv_drop_df = read_csv('tables/lv_items.csv', sep=';')
+    lv_items_df = read_csv('tables/lv_items.csv', sep=';')
     char_dict = {}
     char_dict.update({'Name': str(r[0] + ' ' + r[1] + ' lv ' + r[2])})
     char_dict.update({'Class': str(r[1])})
@@ -33,25 +33,27 @@ def generate_enemy(r, enemy_r, class_r):
     char_dict.update({'Ref': enemy_r['Ref'].iloc[0]})
     char_dict.update({'Wola': enemy_r['Wola'].iloc[0]})
 
-    additional_dict = {"Typ": [], "Nazwa": [], "Info": [], "Att_mod": [], "Dmg_mod": []}
+    additional_dict = {"ID": [], "Typ": [], "Nazwa": [], "Info": [], "Att_mod": [], "Dmg_mod": []}
 
     bonus_row = lv_perks_df.loc[lv_perks_df['Poziom'] == int(r[2])]
 
     for i in range(bonus_row['Atuty'].iloc[0]):
         perk = perks_df.iloc[random.randint(0, len(perks_df)-1)]
+        additional_dict["ID"].append(perk['ID'])
         additional_dict["Typ"].append(perk['Typ'])
         additional_dict["Nazwa"].append(perk['Nazwa'])
         additional_dict["Info"].append(perk['Info'])
         additional_dict["Att_mod"].append(perk['Att_mod'])
         additional_dict["Dmg_mod"].append(perk['Dmg_mod'])
 
-    items_row = lv_drop_df.loc[lv_drop_df['Poziom'] == int(r[2])]
+    items_row = lv_items_df.loc[lv_items_df['Poziom'] == int(r[2])]
     items = enemy_r['Item'].iloc[0]
     items2 = items_row['Item'].iloc[0]
     if not isna(items):
         for i in items.split(',') + items2.split(','):
             if float(i.split('/')[1]) >= random.randint(0, 100) / 100:
                 item = items_df.loc[items_df['Nazwa'] == i.split('/')[0]]
+                additional_dict["ID"].append(item['ID'].iloc[0])
                 additional_dict["Typ"].append(item['Typ'].iloc[0])
                 additional_dict["Nazwa"].append(item['Nazwa'].iloc[0])
                 additional_dict["Info"].append(item['Info'].iloc[0])

@@ -10,7 +10,7 @@ class Character(Frame):
         self.character_id = char_id
         self.ui = 2
 
-        self.grid = Frame(self)
+        self.grid = Frame(self, borderwidth=2, relief="groove")
         self.grid.pack()
 
         self.status = StringVar()
@@ -110,12 +110,6 @@ class Character(Frame):
                                   self.classs.get(), self.level.get(), self.att1.get(), self.att2.get(),
                                   additional=self.additional)
         # self.load_data()
-
-    def load_data(self):
-        self.weapons_df = read_csv('tables/weapons.csv', sep=';')
-        # enemies_df.loc[enemies_df['Przeciwnik'] == r[0]]
-        print(self.weapons_df['Broń'])
-        print(self.weapons_df.loc[self.weapons_df['Broń'] == self.att1.get()])
 
     def add_info(self, row=DataFrame()):
         self.additional = self.additional.append(row)
