@@ -3,7 +3,7 @@ from pandas import read_csv, DataFrame
 
 
 class Creator(Toplevel):
-    def __init__(self, master, generator, enemy_inp):
+    def __init__(self, master, generator):
         super().__init__(master)
         self.grid_main = Frame(self)
         self.grid_main.pack(fill='both')
@@ -18,7 +18,6 @@ class Creator(Toplevel):
         self.party_save_path = StringVar()
         self.party_save_path.set('')
         self.generator = generator
-        self.enemy_inp = enemy_inp
 
         self.monster_choice = Frame(self.grid_main)
         self.monster_choice.pack(fill='x', padx=5, pady=5)

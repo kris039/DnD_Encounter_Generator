@@ -1,4 +1,3 @@
-import random
 from tkinter import (ttk, Tk, Frame, Label, Button, StringVar, Scrollbar, Text, END, Menu, Toplevel, filedialog,
                      messagebox, OptionMenu, Checkbutton)
 from pandas import read_csv, DataFrame
@@ -16,9 +15,8 @@ from back_save_file_functions import *
 class EnGen:
     def __init__(self):
         self.root = Tk()
-        # self.root.iconbitmap(r'')
+        self.root.iconbitmap(default=r'icon.ico')
         self.root.minsize(600, 200)
-        # self.root.resizable(False, True)
         self.root.resizable(False, False)
         self.root.title("EnGen")
 
@@ -99,12 +97,10 @@ class EnGen:
         self.root.mainloop()
 
     def call_choose_enemy(self):
-        enemy_inp = []
-        win = Creator(self.root, self.generate_enemies, enemy_inp)
+        win = Creator(self.root, self.generate_enemies)
 
     def call_enemy_group(self):
-        enemy_inp = []
-        win = EnemyGroupWindow(self.root, self.generate_enemies, enemy_inp)
+        win = EnemyGroupWindow(self.root, self.generate_enemies)
 
     def generate_enemies(self, enemies_inp):
         enemies_df = read_csv('tables/enemies.csv', sep=';')

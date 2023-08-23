@@ -4,7 +4,7 @@ from pandas import read_csv
 
 
 class EnemyGroupWindow(Toplevel):
-    def __init__(self, master, generator, enemy_inp):
+    def __init__(self, master, generator):
         super().__init__(master)
         self.ui_spacing = 2
 
@@ -13,7 +13,7 @@ class EnemyGroupWindow(Toplevel):
         self.resizable(False, False)
 
         self.generator = generator
-        self.enemy_inp = enemy_inp
+        self.enemy_inp = []
 
         self.enemy_list = []
         self.class_list = []
