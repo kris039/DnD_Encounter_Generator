@@ -1,4 +1,5 @@
 from pandas import read_csv
+import random
 
 
 def get_perk_by_name(perk_name):
@@ -34,3 +35,13 @@ def create_dict_from_additional(row):
     row_dict.update({"Att_mod": row['Att_mod'].iloc[0]})
     row_dict.update({"Dmg_mod": row['Dmg_mod'].iloc[0]})
     return row_dict
+
+
+def get_random_additional(add_type, add_class=''):
+    if add_type == 'Atut':
+        perks_df = read_csv('tables/perks.csv', sep=';')
+        return perks_df.iloc[random.randint(0, len(perks_df) - 1)]
+    if add_type == 'Czar':
+        spells_df = read_csv('tables/spells.csv', sep=';')
+        class_spells = spells_df[spells_df['Klasa'] == add_class]
+        return class_spells.iloc[random.randint(0, len(class_spells) - 1)]

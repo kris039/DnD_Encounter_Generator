@@ -17,7 +17,7 @@ class AddInfo(Toplevel):
         if info_type == 'perk':
             self.info_df = read_csv('tables/perks.csv', sep=';')
         elif info_type == 'spell':
-            pass
+            self.info_df = read_csv('tables/spells.csv', sep=';')
         else:
             self.info_df = read_csv('tables/consumables.csv', sep=';')
 
@@ -32,7 +32,7 @@ class AddInfo(Toplevel):
                 desc += str(row['Nazwa']) + ' -> ' + str(row['Info'])
                 desc += '\tAtt mod/Dmg mod -> ' + str(row['Att_mod']) + '/' + str(row['Dmg_mod'])
             elif info_type == 'spell':
-                pass
+                desc = str(row['Klasa']) + ' - ' + str(row['Nazwa']) + ' -> ' + str(row['Info'])
             else:
                 desc = str(row['Nazwa']) + ' -> ' + str(row['Info'])
 

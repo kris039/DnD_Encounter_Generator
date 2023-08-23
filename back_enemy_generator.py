@@ -1,11 +1,10 @@
 import random
 from pandas import read_csv, isna, DataFrame
 from back_get_class_bonuses import get_class_bonuses
+from back_adds_funtions import *
 
 
 def generate_enemy(r, enemy_r, class_r):
-    perks_df = read_csv('tables/perks.csv', sep=';')
-    items_df = read_csv('tables/consumables.csv', sep=';')
     lv_perks_df = read_csv('tables/lv_skills.csv', sep=';')
     lv_items_df = read_csv('tables/lv_items.csv', sep=';')
     char_dict = {}
@@ -33,18 +32,15 @@ def generate_enemy(r, enemy_r, class_r):
     char_dict.update({'Ref': enemy_r['Ref'].iloc[0]})
     char_dict.update({'Wola': enemy_r['Wola'].iloc[0]})
 
-    additional_dict = {"ID": [], "Typ": [], "Nazwa": [], "Info": [], "Att_mod": [], "Dmg_mod": []}
+    additional = DataFrame()
 
     bonus_row = lv_perks_df.loc[lv_perks_df['Poziom'] == int(r[2])]
 
     for i in range(bonus_row['Atuty'].iloc[0]):
-        perk = perks_df.iloc[random.randint(0, len(perks_df)-1)]
-        additional_dict["ID"].append(perk['ID'])
-        additional_dict["Typ"].append(perk['Typ'])
-        additional_dict["Nazwa"].append(perk['Nazwa'])
-        additional_dict["Info"].append(perk['Info'])
-        additional_dict["Att_mod"].append(perk['Att_mod'])
-        additional_dict["Dmg_mod"].append(perk['Dmg_mod'])
+        additional = additional.append(get_random_additional('Atut'), ignore_index=True)
+
+    for i in range(int(int(r[2])/3)):
+        additional = additional.append(get_random_additional('Czar', r[1]), ignore_index=True)
 
     items_row = lv_items_df.loc[lv_items_df['Poziom'] == int(r[2])]
     items = enemy_r['Item'].iloc[0]
@@ -52,13 +48,6 @@ def generate_enemy(r, enemy_r, class_r):
     if not isna(items):
         for i in items.split(',') + items2.split(','):
             if float(i.split('/')[1]) >= random.randint(0, 100) / 100:
-                item = items_df.loc[items_df['Nazwa'] == i.split('/')[0]]
-                additional_dict["ID"].append(item['ID'].iloc[0])
-                additional_dict["Typ"].append(item['Typ'].iloc[0])
-                additional_dict["Nazwa"].append(item['Nazwa'].iloc[0])
-                additional_dict["Info"].append(item['Info'].iloc[0])
-                additional_dict["Att_mod"].append(item['Att_mod'].iloc[0])
-                additional_dict["Dmg_mod"].append(item['Dmg_mod'].iloc[0])
-
-    additional = DataFrame(additional_dict)
+                additional = additional.append(get_item_by_name(i.split('/')[0]), ignore_index=True)
+    additional = additional.fillna(0)
     return [char_dict, additional]

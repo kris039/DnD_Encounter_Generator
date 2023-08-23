@@ -111,8 +111,8 @@ class CharacterInfo(Toplevel):
             if row.loc['Typ'] == 'Atut':
                 perk_str += (str(row['Nazwa']) + ' -> ' + str(row['Info'])
                              + '\n\tAtt mod/Dmg mod -> ' + str(row['Att_mod']) + '/' + str(row['Dmg_mod']) + '\n\n')
-            elif row.loc['Typ'] == 'Zaklęcie':
-                spell_str += row + 'W.I.P.'
+            elif row.loc['Typ'] == 'Czar':
+                spell_str += (str(row['Nazwa']) + ' -> ' + str(row['Info']) + '\n\n')
             else:
                 item_str += (str(row['Nazwa']) + ' -> ' + str(row['Info']) + '\n\n')
 
@@ -134,7 +134,7 @@ class CharacterInfo(Toplevel):
         win = AddInfo(self, self.add_info, 'perk')
 
     def call_add_skill(self):
-        print('W.I.P.')
+        win = AddInfo(self, self.add_info, 'spell')
 
     def call_add_item(self):
         win = AddInfo(self, self.add_info, 'item')
