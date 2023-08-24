@@ -1,13 +1,14 @@
 from tkinter import ttk, Tk, Frame, Label, Entry, StringVar, Button, Toplevel, OptionMenu
 from window_add_info import AddInfo
 from window_change_weapon import ChangeWeapon
+from back_adds_funtions import *
 from pandas import DataFrame, read_csv
 from functools import partial
 
 
 class CharacterInfo(Toplevel):
-    def __init__(self, master, change_class_func, change_level_func, change_weapon_func, add_info_func,
-                 classs, level, att1, att2, additional=DataFrame()):
+    def __init__(self, master, change_class_func, change_level_func, change_weapon_func, get_info_funcs,
+                 classs, level, att1, att2):
         super().__init__(master)
         self.ui = 2
 
@@ -21,12 +22,14 @@ class CharacterInfo(Toplevel):
         self.change_class_func = change_class_func
         self.change_level_func = change_level_func
         self.change_weapon_func = change_weapon_func
-        self.add_info_func = add_info_func
-        self.additional = additional
+        self.info_funcs = get_info_funcs
         self.classs = StringVar()
         self.level = StringVar()
         self.att1 = StringVar()
         self.att2 = StringVar()
+        self.perk_list = self.info_funcs()[0]()
+        self.spell_list = self.info_funcs()[2]()
+        self.item_list = self.info_funcs()[4]()
         self.perks = StringVar()
         self.spells = StringVar()
         self.item = StringVar()
@@ -107,18 +110,25 @@ class CharacterInfo(Toplevel):
         perk_str = '\n'
         spell_str = '\n'
         item_str = '\n'
-        for index, row in self.additional.iterrows():
-            if row.loc['Typ'] == 'Atut':
-                perk_str += (str(row['Nazwa']) + ' -> ' + str(row['Info'])
-                             + '\n\tAtt mod/Dmg mod -> ' + str(row['Att_mod']) + '/' + str(row['Dmg_mod']) + '\n\n')
-            elif row.loc['Typ'] == 'Czar':
-                spell_str += (str(row['Nazwa']) + ' -> ' + str(row['Info']) + '\n\n')
-            else:
-                item_str += (str(row['Nazwa']) + ' -> ' + str(row['Info']) + '\n\n')
+        self.perk_list = self.info_funcs()[0]()
+        self.spell_list = self.info_funcs()[2]()
+        self.item_list = self.info_funcs()[4]()
+        for p in self.perk_list:
+            perk_row = get_perk_by_id(p)
+            perk_str += (str(perk_row['Nazwa']) + ' -> ' + str(perk_row['Info'])
+                         + '\n\tAtt mod/Dmg mod -> ' + str(perk_row['Att_mod']) + '/' + str(perk_row['Dmg_mod']) + '\n\n')
 
-            self.perks.set(perk_str)
-            self.spells.set(spell_str)
-            self.item.set(item_str)
+        for s in self.spell_list:
+            spell_row = get_spell_by_id(s)
+            spell_str += (str(spell_row['Nazwa']) + ' -> ' + str(spell_row['Info']) + '\n\n')
+
+        for p in self.item_list:
+            item_row = get_item_by_id(p)
+            item_str += (str(item_row['Nazwa']) + ' -> ' + str(item_row['Info']) + '\n\n')
+
+        self.perks.set(perk_str)
+        self.spells.set(spell_str)
+        self.item.set(item_str)
 
     def call_change_weapon(self, num):
         win = ChangeWeapon(self, self.change_weapon, num)
@@ -131,17 +141,21 @@ class CharacterInfo(Toplevel):
         self.change_weapon_func(self.att1.get(), self.att2.get())
 
     def call_add_perk(self):
-        win = AddInfo(self, self.add_info, 'perk')
+        win = AddInfo(self, self.add_info, 'Atut')
 
     def call_add_skill(self):
-        win = AddInfo(self, self.add_info, 'spell')
+        win = AddInfo(self, self.add_info, 'Czar')
 
     def call_add_item(self):
-        win = AddInfo(self, self.add_info, 'item')
+        win = AddInfo(self, self.add_info, 'Przedmiot')
 
-    def add_info(self, row):
-        self.additional = self.additional.append(row)
-        self.add_info_func(row)
+    def add_info(self, info, info_type):
+        if info_type == 'Atut':
+            self.info_funcs()[1](info)
+        elif info_type == 'Czar':
+            self.info_funcs()[3](info)
+        else:
+            self.info_funcs()[5](info)
         self.display_additional()
 
     def fill_classes(self):

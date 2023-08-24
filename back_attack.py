@@ -47,3 +47,8 @@ def attack(attacker, attacked, weapons_df, nr, cl_mod):
         text += '\n\t' + attacker.name.get() + ' chybił'
     return text
 
+    def zero_if_negative(num):
+        if num < 0:
+            return 0
+        else:
+            return num

@@ -42,14 +42,14 @@ class EnGen:
         self.menubar.add_cascade(label="Ogólne", menu=self.generalmenu)
 
         self.partymenu = Menu(self.menubar, tearoff=0)
-        self.partymenu.add_command(label="Otworz party", command=self.call_open)
+        self.partymenu.add_command(label="Otworz party", command=self.call_open_party)
         self.partymenu.add_command(label="Zapisz party", command=self.call_save_party)
         self.partymenu.add_separator()
         self.partymenu.add_command(label="Dodaj gracza", command=self.add_player)
         self.menubar.add_cascade(label="Gracze", menu=self.partymenu)
 
         self.enemymenu = Menu(self.menubar, tearoff=0)
-        self.enemymenu.add_command(label="Otworz przeciwników", command=self.call_open)
+        self.enemymenu.add_command(label="Otworz przeciwników", command=self.call_open_enemies)
         self.enemymenu.add_command(label="Zapisz przeciwników", command=self.call_save_enemies)
         self.enemymenu.add_separator()
         self.enemymenu.add_command(label="Wybierz przeciwników", command=self.call_choose_enemy)
@@ -109,7 +109,7 @@ class EnGen:
             r = e.split(', ')
             enemy_r = enemies_df.loc[enemies_df['Przeciwnik'] == r[0]]
             class_r = classes_df.loc[classes_df['Klasa'] == r[1]]
-            enemy = Enemy(self.grid_bottom, self.id_count, *generate_enemy(r, enemy_r, class_r))
+            enemy = Enemy(self.grid_bottom, self.id_count, generate_enemy(r, enemy_r, class_r))
             self.id_count += 1
             self.characters.append(enemy)
             enemy.pack(side='left', padx=2, pady=2)
@@ -148,7 +148,6 @@ class EnGen:
 
                 class_mods = attacker.class_mod.get().split('/')
                 cl_mod = int(class_mods[self.attack_count-1])
-                print(self.attack_count, self.previous_attacker)
 
                 if self.attack_count < len(class_mods):
                     self.attack_count += 1
@@ -164,6 +163,12 @@ class EnGen:
         self.attack_to.set_menu(None, *self.character_list)
         self.check()
 
+    def call_open_party(self):
+        self.call_open(who='Gracz')
+
+    def call_open_enemies(self):
+        self.call_open(who='Przeciwnik')
+
     def call_open(self, path='', who=''):
         load_characters(self.add_player, self.add_enemy, who=who, path=path)
 
@@ -174,21 +179,21 @@ class EnGen:
         self.call_save('Przeciwnik')
 
     def call_save(self, who=''):
-        save_characters(self.characters)
+        save_characters(self.characters, who)
 
-    def add_player(self, char_dict=(), add_df=DataFrame()):
+    def add_player(self, char_dict=()):
         if char_dict == ():
             char_dict = create_dummy_char_dict('Gracz')
-        player = Player(self.grid_top, self.id_count, char_dict, add_df)
+        player = Player(self.grid_top, self.id_count, char_dict)
         self.id_count += 1
         self.characters.append(player)
         player.pack(side='left', padx=2, pady=2)
         self.call_refresh()
 
-    def add_enemy(self, char_dict=(), add_df=DataFrame()):
+    def add_enemy(self, char_dict=()):
         if char_dict == ():
             char_dict = create_dummy_char_dict('Przeciwnik')
-        enemy = Enemy(self.grid_bottom, self.id_count, char_dict, add_df)
+        enemy = Enemy(self.grid_bottom, self.id_count, char_dict)
         self.id_count += 1
         self.characters.append(enemy)
         enemy.pack(side='left', padx=2, pady=2)
@@ -229,6 +234,4 @@ class EnGen:
 if __name__ == "__main__":
     r = random.randint(1, 8)
     hp = int(0.5 * r)
-    print(r)
-    print(hp)
 

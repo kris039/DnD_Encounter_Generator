@@ -5,7 +5,7 @@ from pandas import read_csv, DataFrame
 
 
 class Character(Frame):
-    def __init__(self, master, char_id, char_dict, additional=DataFrame()):
+    def __init__(self, master, char_id, char_dict):
         super().__init__(master)
         self.character_id = char_id
         self.ui = 2
@@ -50,7 +50,9 @@ class Character(Frame):
         self.wytr.set(char_dict['Wytr'])
         self.ref.set(char_dict['Ref'])
         self.wola.set(char_dict['Wola'])
-        self.additional = additional
+        self.perks = char_dict['Perks']
+        self.spells = char_dict['Spells']
+        self.items = char_dict['Items']
 
         self.label_name = Entry(self.grid, textvariable=self.name)
         self.label_name.grid(row=0, column=0, columnspan=2, sticky='we', padx=self.ui, pady=self.ui)
@@ -105,14 +107,20 @@ class Character(Frame):
         self.field_wola = Spinbox(self.grid, from_=-10, to=100, textvariable=self.wola, width=10)
         self.field_wola.grid(row=9, column=2, padx=self.ui, pady=self.ui)
 
-    def call_info(self):
-        self.info = CharacterInfo(self.grid, self.change_class, self.change_level, self.change_weapon, self.add_info,
-                                  self.classs.get(), self.level.get(), self.att1.get(), self.att2.get(),
-                                  additional=self.additional)
-        # self.load_data()
+        if isinstance(self.perks, str):
+            self.perks = self.perks.split(',')
+        if isinstance(self.spells, str):
+            self.spells = self.spells.split(',')
+        if isinstance(self.items, str):
+            self.items = self.items.split(',')
 
-    def add_info(self, row=DataFrame()):
-        self.additional = self.additional.append(row)
+
+    def call_info(self):
+        self.info = CharacterInfo(self, self.change_class, self.change_level, self.change_weapon, self.get_info_funcs,
+                                  self.classs.get(), self.level.get(), self.att1.get(), self.att2.get())
+
+    def get_info_funcs(self):
+        return [self.get_perks, self.add_perks, self.get_spells, self.add_spells, self.get_items, self.add_items]
 
     def change_weapon(self, att1, att2):
         self.att1.set(att1)
@@ -125,3 +133,21 @@ class Character(Frame):
     def change_level(self, level):
         self.level.set(level)
         self.class_mod.set(get_class_bonuses(self.classs.get(), self.level.get()))
+
+    def get_perks(self):
+        return self.perks
+
+    def add_perks(self, perk):
+        self.perks.append(perk)
+
+    def get_spells(self):
+        return self.spells
+
+    def add_spells(self, spell):
+        self.spells.append(spell)
+
+    def get_items(self):
+        return self.items
+
+    def add_items(self, item):
+        self.items.append(item)

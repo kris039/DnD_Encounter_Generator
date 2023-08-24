@@ -14,9 +14,9 @@ class AddInfo(Toplevel):
 
         self.func = func
 
-        if info_type == 'perk':
+        if info_type == 'Atut':
             self.info_df = read_csv('tables/perks.csv', sep=';')
-        elif info_type == 'spell':
+        elif info_type == 'Czar':
             self.info_df = read_csv('tables/spells.csv', sep=';')
         else:
             self.info_df = read_csv('tables/consumables.csv', sep=';')
@@ -28,10 +28,10 @@ class AddInfo(Toplevel):
         self.y = 0
         for index, row in self.info_df.iterrows():
             desc = ''
-            if info_type == 'perk':
+            if info_type == 'Atut':
                 desc += str(row['Nazwa']) + ' -> ' + str(row['Info'])
                 desc += '\tAtt mod/Dmg mod -> ' + str(row['Att_mod']) + '/' + str(row['Dmg_mod'])
-            elif info_type == 'spell':
+            elif info_type == 'Czar':
                 desc = str(row['Klasa']) + ' - ' + str(row['Nazwa']) + ' -> ' + str(row['Info'])
             else:
                 desc = str(row['Nazwa']) + ' -> ' + str(row['Info'])
@@ -40,7 +40,7 @@ class AddInfo(Toplevel):
             frame_item.grid(column=self.x, row=self.y, sticky='we', padx=self.ui, pady=self.ui)
             label_item = Label(frame_item, text=desc)
             label_item.pack(side='left', fill='both', padx=self.ui, pady=self.ui)
-            button_item = Button(frame_item, text='Dodaj', command=partial(self.func, row))
+            button_item = Button(frame_item, text='Dodaj', command=partial(self.func, row['ID'], info_type))
             button_item.pack(side='right', padx=self.ui, pady=self.ui)
             if self.y >= self.height_limit:
                 self.x += 1

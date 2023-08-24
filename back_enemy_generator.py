@@ -1,5 +1,5 @@
 import random
-from pandas import read_csv, isna, DataFrame
+from pandas import read_csv, isna, DataFrame, concat
 from back_get_class_bonuses import get_class_bonuses
 from back_adds_funtions import *
 
@@ -32,22 +32,29 @@ def generate_enemy(r, enemy_r, class_r):
     char_dict.update({'Ref': enemy_r['Ref'].iloc[0]})
     char_dict.update({'Wola': enemy_r['Wola'].iloc[0]})
 
-    additional = DataFrame()
+    perks = []
+    spells = []
+    items = []
 
-    bonus_row = lv_perks_df.loc[lv_perks_df['Poziom'] == int(r[2])]
+    perks_row = lv_perks_df.loc[lv_perks_df['Poziom'] == int(r[2])]
 
-    for i in range(bonus_row['Atuty'].iloc[0]):
-        additional = additional.append(get_random_additional('Atut'), ignore_index=True)
+    for i in range(perks_row['Atuty'].iloc[0]):
+        # perks.append(str(get_random_info_id('Atut')))
+        perks.append(str(get_random_info_id('Atut')))
 
     for i in range(int(int(r[2])/3)):
-        additional = additional.append(get_random_additional('Czar', r[1]), ignore_index=True)
+        # spells.append(str(get_random_info_id('Czar', r[1])))
+        spells.append(str(get_random_info_id('Czar', r[1])))
 
-    items_row = lv_items_df.loc[lv_items_df['Poziom'] == int(r[2])]
-    items = enemy_r['Item'].iloc[0]
-    items2 = items_row['Item'].iloc[0]
-    if not isna(items):
-        for i in items.split(',') + items2.split(','):
+    items_lv = lv_items_df.loc[lv_items_df['Poziom'] == int(r[2])]['Item'].iloc[0]
+    items_en = enemy_r['Item'].iloc[0]
+    if not isna(items_en):
+        for i in items_en.split(',') + items_lv.split(','):
             if float(i.split('/')[1]) >= random.randint(0, 100) / 100:
-                additional = additional.append(get_item_by_name(i.split('/')[0]), ignore_index=True)
-    additional = additional.fillna(0)
-    return [char_dict, additional]
+                items.append(i.split('/')[0])
+
+    char_dict.update({'Perks': perks})
+    char_dict.update({'Spells': spells})
+    char_dict.update({'Items': items})
+
+    return char_dict
