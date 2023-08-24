@@ -16,7 +16,7 @@ class ChangeWeapon(Toplevel):
         self.func = func
         self.num = num
 
-        self.weapon_df = read_csv('tables/weapons.csv', sep=';')
+        self.weapon_df = read_csv('resources/weapons.csv', sep=';')
 
         self.grid = Frame(self)
         self.grid.pack(fill='both', padx=10, pady=10)

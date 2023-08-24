@@ -78,8 +78,8 @@ class EnemyGroupWindow(Toplevel):
         self.destroy()
 
     def load_data(self):
-        self.enemybook = read_csv('tables/enemies.csv', sep=';')
-        self.classbook = read_csv('tables/classes.csv', sep=';')
+        self.enemybook = read_csv('resources/enemies.csv', sep=';')
+        self.classbook = read_csv('resources/classes.csv', sep=';')
 
     def fill_enemy_list(self):
         for e in list(self.enemybook['Przeciwnik']):

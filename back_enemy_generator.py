@@ -5,8 +5,8 @@ from back_adds_funtions import *
 
 
 def generate_enemy(r, enemy_r, class_r):
-    lv_perks_df = read_csv('tables/lv_skills.csv', sep=';')
-    lv_items_df = read_csv('tables/lv_items.csv', sep=';')
+    lv_perks_df = read_csv('resources/lv_skills.csv', sep=';')
+    lv_items_df = read_csv('resources/lv_items.csv', sep=';')
     char_dict = {}
     char_dict.update({'Name': str(r[0] + ' ' + r[1] + ' lv ' + r[2])})
     char_dict.update({'Class': str(r[1])})

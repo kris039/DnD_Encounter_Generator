@@ -25,7 +25,7 @@ class EnGen:
         self.id_count = 0
         self.attack_count = 1
         self.previous_attacker = -1
-        self.weapons_df = read_csv('tables/weapons.csv', sep=';')
+        self.weapons_df = read_csv('resources/weapons.csv', sep=';')
 
         self.attack_from_name = StringVar()
         self.attack_to_name = StringVar()
@@ -103,8 +103,8 @@ class EnGen:
         win = EnemyGroupWindow(self.root, self.generate_enemies)
 
     def generate_enemies(self, enemies_inp):
-        enemies_df = read_csv('tables/enemies.csv', sep=';')
-        classes_df = read_csv('tables/classes.csv', sep=';')
+        enemies_df = read_csv('resources/enemies.csv', sep=';')
+        classes_df = read_csv('resources/classes.csv', sep=';')
         for e in enemies_inp:
             r = e.split(', ')
             enemy_r = enemies_df.loc[enemies_df['Przeciwnik'] == r[0]]

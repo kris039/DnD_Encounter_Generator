@@ -1,0 +1,4 @@
+ID;Przeciwnik;Kategoria;KW_mod;KW_k;KP;Atak_1;Atak_1_mod;Atak_1_dmg_mod;Atak_2;Atak_2_mod;Atak_2_dmg_mod;Wytrw;Ref;Wola;Item
+e00;Kobold;Małe humanoidy;0.5;8;15;Półwłócznia;-1;-2;Kusza, lekka;2;0;0;1;2;i01/0.5,i02/1
+e01;Goblin(t);Testy;1;10;5;Dziryt;-1;-2;Kusza, lekka;2;0;0;1;2;i01/1
+e02;Ork(t);Testy;2;4;10;Drąg;-1;-2;Kusza, lekka;2;0;0;1;2;

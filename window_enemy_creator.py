@@ -43,9 +43,9 @@ class Creator(Toplevel):
         self.load_data()
 
     def load_data(self):
-        self.enemybook = read_csv('tables/enemies.csv', sep=';')
+        self.enemybook = read_csv('resources/enemies.csv', sep=';')
         self.monster_type['values'] = list(self.enemybook['Przeciwnik'])
-        self.classbook = read_csv('tables/classes.csv', sep=';')
+        self.classbook = read_csv('resources/classes.csv', sep=';')
         self.monster_class['values'] = list(self.classbook['Klasa'])
 
     def call_add(self):

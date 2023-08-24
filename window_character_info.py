@@ -159,5 +159,5 @@ class CharacterInfo(Toplevel):
         self.display_additional()
 
     def fill_classes(self):
-        class_df = read_csv('tables/classes.csv', sep=';')
+        class_df = read_csv('resources/classes.csv', sep=';')
         self.class_list = class_df['Klasa'].to_list()

@@ -15,11 +15,11 @@ class AddInfo(Toplevel):
         self.func = func
 
         if info_type == 'Atut':
-            self.info_df = read_csv('tables/perks.csv', sep=';')
+            self.info_df = read_csv('resources/perks.csv', sep=';')
         elif info_type == 'Czar':
-            self.info_df = read_csv('tables/spells.csv', sep=';')
+            self.info_df = read_csv('resources/spells.csv', sep=';')
         else:
-            self.info_df = read_csv('tables/consumables.csv', sep=';')
+            self.info_df = read_csv('resources/consumables.csv', sep=';')
 
         self.grid = Frame(self)
         self.grid.pack(fill='both', padx=10, pady=10)
