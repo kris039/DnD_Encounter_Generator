@@ -26,7 +26,7 @@ def attack(attacker, attacked, weapons_df, nr, cl_mod):
                  + ' - TRAFIENIE KRYTYCZNE')
         for i in range(weapon['Kryt_mnożnik'].iloc[0]):
             dmg_throw = random.randint(1, weapon['Obrażenia'].iloc[0])
-            dmg += dmg_throw + dmg_mod
+            dmg += zero_if_negative(dmg_throw + dmg_mod)
             text += ('\n\t' + attacker.name.get() + ': Rzut k' + str(weapon['Obrażenia'].iloc[0]) + ' na obrażenia: '
                      + str(dmg_throw) + ' + modyfikator obrażeń: ' + str(dmg_mod))
         text += '\n\t' + attacker.name.get() + ' zadał ' + str(dmg) + ' punktów obrażeń'
@@ -35,7 +35,7 @@ def attack(attacker, attacked, weapons_df, nr, cl_mod):
         text += ('\n\t' + 'KP: ' + attacked.kp.get() + ' vs Rzut: ' + str(hit_throw) +
                  ' + modyfikator ataku: ' + str(att_mod) + ' + modyfikator clasy: ' + str(cl_mod))
         dmg_throw = random.randint(1, weapon['Obrażenia'].iloc[0])
-        dmg += dmg_throw + dmg_mod
+        dmg += zero_if_negative(dmg_throw + dmg_mod)
         text += ('\n\t' + attacker.name.get() + ': Rzut k' + str(weapon['Obrażenia'].iloc[0]) + ' na obrażenia: '
                  + str(dmg_throw) + ' + modyfikator obrażeń: ' + str(dmg_mod))
         text += '\n\t' + attacker.name.get() + ' zadał punktów obrażeń ' + str(dmg)
@@ -47,8 +47,9 @@ def attack(attacker, attacked, weapons_df, nr, cl_mod):
         text += '\n\t' + attacker.name.get() + ' chybił'
     return text
 
-    def zero_if_negative(num):
-        if num < 0:
-            return 0
-        else:
-            return num
+
+def zero_if_negative(num):
+    if num < 0:
+        return 0
+    else:
+        return num
