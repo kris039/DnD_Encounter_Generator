@@ -15,7 +15,7 @@ from back_save_file_functions import *
 class EnGen:
     def __init__(self):
         self.root = Tk()
-        self.root.iconbitmap(default=r'icon.ico')
+        self.root.iconbitmap(default=r'resources/icon.ico')
         self.root.minsize(600, 200)
         self.root.resizable(False, False)
         self.root.title("EnGen")
